@@ -1,0 +1,54 @@
+<div id='jt_current'>Current color</div>
+<div id='jt_tints'></div>
+<div id='jt_shades'></div>
+
+
+<button id='jt_current-color'>Update color</button>
+
+<script>
+
+document.getElementById('jt_current-color').onclick = () => {
+  // const textbox = document.getElementById('count');
+  parent.postMessage({ pluginMessage: { type: 'current-color' } }, '*');
+
+  onmessage = (event) => {
+
+    console.log(event.data.pluginMessage);
+
+    const r = event.data.pluginMessage.rgb.r,
+          g = event.data.pluginMessage.rgb.g,
+          b = event.data.pluginMessage.rgb.b,
+          currentColor = document.getElementById('jt_current'),
+          tintsWrapper = document.getElementById('jt_tints'),
+          shadesWrapper = document.getElementById('jt_shades'),
+          tints = event.data.pluginMessage.shades.tints,
+          shades = event.data.pluginMessage.shades.shades;
+
+
+    let totalTints = '';
+    tints.forEach(function(tint) {
+      totalTints +=  '<div style=background-color:rgb('+tint+')>'+ tint + '</div>';
+      return totalTints;
+    });
+
+    let totalShades = '';
+    shades.forEach(function(shade) {
+      totalShades +=  '<div style=background-color:rgb('+shade+')>'+ shade + '</div>';
+      return totalShades;
+    });
+
+
+
+    //UI feedback
+    currentColor.innerHTML = r + ',' + g + ',' + b;
+    currentColor.setAttribute('style', 'background-color:rgb('+r+','+g+','+b+')');
+
+    tintsWrapper.innerHTML = totalTints;
+    shadesWrapper.innerHTML = totalShades;
+  }
+
+}
+
+
+
+</script>
