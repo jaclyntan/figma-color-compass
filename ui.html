@@ -1,54 +1,243 @@
-<div id='jt_current'>Current color</div>
-<div id='jt_tints'></div>
-<div id='jt_shades'></div>
-
-
-<button id='jt_current-color'>Update color</button>
-
-<script>
-
-document.getElementById('jt_current-color').onclick = () => {
-  // const textbox = document.getElementById('count');
-  parent.postMessage({ pluginMessage: { type: 'current-color' } }, '*');
-
-  onmessage = (event) => {
-
-    console.log(event.data.pluginMessage);
-
-    const r = event.data.pluginMessage.rgb.r,
-          g = event.data.pluginMessage.rgb.g,
-          b = event.data.pluginMessage.rgb.b,
-          currentColor = document.getElementById('jt_current'),
-          tintsWrapper = document.getElementById('jt_tints'),
-          shadesWrapper = document.getElementById('jt_shades'),
-          tints = event.data.pluginMessage.shades.tints,
-          shades = event.data.pluginMessage.shades.shades;
-
-
-    let totalTints = '';
-    tints.forEach(function(tint) {
-      totalTints +=  '<div style=background-color:rgb('+tint+')>'+ tint + '</div>';
-      return totalTints;
-    });
-
-    let totalShades = '';
-    shades.forEach(function(shade) {
-      totalShades +=  '<div style=background-color:rgb('+shade+')>'+ shade + '</div>';
-      return totalShades;
-    });
-
-
-
-    //UI feedback
-    currentColor.innerHTML = r + ',' + g + ',' + b;
-    currentColor.setAttribute('style', 'background-color:rgb('+r+','+g+','+b+')');
-
-    tintsWrapper.innerHTML = totalTints;
-    shadesWrapper.innerHTML = totalShades;
-  }
-
+<style>
+body {
+    font-family: sans-serif;
+    font-size: .7em;
 }
 
+.grid-wrapper {
+    display: grid;
+    grid-template-columns: 100px 1fr;
+}
 
+/* Controls */
+.controls {
+    padding:0 0 10px;
+    background: #FFF;
+    border-bottom: 1px solid #E5E5E5;
+}
+
+label {
+    font-weight: bold;
+    margin:  .5em 0;
+    display: block;
+}
+button {
+    border-radius: 3px;
+    border: none;
+    background: none;
+    appearance: none;
+    display: block;
+    margin: 2px;
+}
+#update-color,
+#customSteps {
+    margin-left: auto;
+    border: 1px solid #E5E5E5;
+}
+
+#update-color:hover,
+#customSteps:hover {
+    /* background: #E5E5E5; */
+    outline: 1px solid #E5E5E5;
+}
+
+#update-color:focus,
+#customSteps:focus {
+    outline: 2px solid #0094FE;
+}
+
+/* Colour palettes */
+#colours {
+    padding: 10px 0;
+    display: none;
+}
+#colours.active {
+  display: block;
+}
+
+.swatch {
+    width: 100%;
+    height: 20px;
+    display: block;
+    overflow: hidden;
+}
+
+.palette {
+  display: flex;
+  margin-bottom: 1em;
+  border-bottom: 1px solid #E5E5E5;
+  padding: 0 0 5px;
+}
+.palettes {
+  padding: 0 10px;
+}
+</style>
+
+<div class="grid-wrapper controls">
+  <div class="col">
+    <div class="steps">
+        <label for="customSteps">Steps</label>
+        <input type="number" name="quantity" min="3" max="20" id="customSteps" value="5">
+    </div>
+  </div>
+  <div class="col">
+    <button id="update-color">Update Color</button>
+  </div>
+</div>
+
+<div id="colours">
+  <div class="grid-wrapper">
+    <div class="col">
+        <div id="tints-shades">
+            <label>Shades</label>
+            <div id="shades"></div>
+
+            <label>Tints</label>
+            <div id="tints"></div>
+        </div>
+    </div>
+    <div class="col palettes">
+        <label>Complementary</label>
+        <div id="complementary" class="palette"></div>
+        <label>Split Complementary</label>
+        <div id="split-complementary" class="palette"></div>
+        <label>Triadic</label>
+        <div id="triadic" class="palette"></div>
+        <label>Analagous</label>
+        <div id="analagous" class="palette"></div>
+        <label>Tetradic</label>
+        <div id="tetradic" class="palette"></div>
+    </div>
+  </div>
+</div>
+<script>
+  parent.postMessage({ pluginMessage: {
+    type: 'hello'
+  } }, '*');
+function updateColor() {
+    parent.postMessage({ pluginMessage: {
+      type: 'update-color',
+      customSteps: document.getElementById('customSteps').value
+    } }, '*');
+
+    onmessage = (event) => {
+      parent.postMessage({ pluginMessage: {
+        type: 'update-color',
+        customSteps: document.getElementById('customSteps').value
+      } }, '*');
+
+    onmessage = (event) => {
+      const r = event.data.pluginMessage.rgb.r,
+            g = event.data.pluginMessage.rgb.g,
+            b = event.data.pluginMessage.rgb.b,
+
+            //wrappers
+            currentColor = document.getElementById('current'),
+            coloursWrapper = document.getElementById('colours'),
+            tintsWrapper = document.getElementById('tints'),
+            shadesWrapper = document.getElementById('shades'),
+            complementaryWrapper = document.getElementById('complementary'),
+            splitComplementaryWrapper = document.getElementById('split-complementary'),
+            triadicWrapper = document.getElementById('triadic'),
+            analagousWrapper = document.getElementById('analagous'),
+            tetradicWrapper = document.getElementById('tetradic'),
+
+            //colour data
+            tints = event.data.pluginMessage.shades.tints,
+            shades = event.data.pluginMessage.shades.shades;
+            complementary = event.data.pluginMessage.complementary,
+            splitComplementary = event.data.pluginMessage.splitComplementary,
+            triadic = event.data.pluginMessage.triadic,
+            analagous = event.data.pluginMessage.analagous,
+            tetradic = event.data.pluginMessage.tetradic;
+
+      let totalTints = '';
+      tints.forEach(function(tint) {
+        const rgb = tint.r+','+tint.g+','+tint.b;
+        totalTints +=  '<button class="tint swatch" style="background-color:rgb('+rgb+')" data-r="'+tint.r+ '" data-g="'+tint.g+ '" data-b="'+tint.b+ '"></button>';
+        return totalTints;
+      });
+
+      let totalShades = '';
+      shades.forEach(function(shade) {
+        const rgb = shade.r+','+shade.g+','+shade.b;
+        totalShades +=  '<button class="tint swatch" style="background-color:rgb('+rgb+')" data-r="'+shade.r+ '" data-g="'+shade.g+ '" data-b="'+shade.b+ '"></button>';
+        return totalShades;
+      });
+
+      let totalComps = '';
+      complementary.forEach(function(comp) {
+        const rgb = comp.r+','+comp.g+','+comp.b;
+        totalComps +=  '<button class="swatch" style="background-color:rgb('+rgb+')" data-r="'+comp.r+ '" data-g="'+comp.g+ '" data-b="'+comp.b+ '"></button>';
+        return totalComps;
+      });
+
+      let splitComps = '';
+      splitComplementary.forEach(function(comp) {
+        const rgb = comp.r+','+comp.g+','+comp.b;
+        splitComps +=  '<button class="swatch" style="background-color:rgb('+rgb+')" data-r="'+comp.r+ '" data-g="'+comp.g+ '" data-b="'+comp.b+ '"></button>';
+        return splitComps;
+      });
+
+      let triadicComps = '';
+      triadic.forEach(function(comp) {
+        const rgb = comp.r+','+comp.g+','+comp.b;
+        triadicComps +=  '<button class="swatch" style="background-color:rgb('+rgb+')" data-r="'+comp.r+ '" data-g="'+comp.g+ '" data-b="'+comp.b+ '"></button>';
+        return triadicComps;
+      });
+
+      let analagousComps = '';
+      analagous.forEach(function(comp) {
+        const rgb = comp.r+','+comp.g+','+comp.b;
+        analagousComps +=  '<button class="swatch" style="background-color:rgb('+rgb+')" data-r="'+comp.r+ '" data-g="'+comp.g+ '" data-b="'+comp.b+ '"></button>';
+        return analagousComps;
+      });
+
+      let tetradicComps = '';
+      tetradic.forEach(function(comp) {
+        const rgb = comp.r+','+comp.g+','+comp.b;
+        tetradicComps +=  '<button class="swatch" style="background-color:rgb('+rgb+')" data-r="'+comp.r+ '" data-g="'+comp.g+ '" data-b="'+comp.b+ '"></button>';
+        return tetradicComps;
+      });
+
+      //Update the UI then add additional click events to the swatches
+      let updateUI = new Promise((resolve, reject) => {
+        shadesWrapper.innerHTML = totalShades;
+        tintsWrapper.innerHTML = totalTints;
+        complementaryWrapper.innerHTML = totalComps;
+        splitComplementaryWrapper.innerHTML = splitComps;
+        triadicWrapper.innerHTML = triadicComps;
+        analagousWrapper.innerHTML = analagousComps;
+        tetradicWrapper.innerHTML = tetradicComps;
+        coloursWrapper.setAttribute("style", "display:block;");
+
+        resolve("✨Colours successfully updated ✨");
+      });
+
+      updateUI.then((successMessage) => {
+        console.log(successMessage);
+        const swatches = document.getElementsByClassName('swatch');
+        for(var i=0;i<swatches.length;i++){
+          swatches[i].addEventListener("click", function(){
+            parent.postMessage({ pluginMessage: {
+              type: 'change-color',
+              r: this.dataset.r,
+              g: this.dataset.g,
+              b: this.dataset.b,
+            } }, '*');
+          });
+        }
+      });
+    }
+  }
+}
+
+//init
+updateColor();
+
+//update the colour
+document.getElementById('update-color').addEventListener("click", function(){
+  updateColor();
+});
 
 </script>

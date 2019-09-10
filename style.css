@@ -1,0 +1,54 @@
+body {
+    font-family: sans-serif;
+    font-size: .7em;
+}
+
+.grid-wrapper {
+    display: grid;
+    grid-template-columns: 20px 1fr;
+}
+
+/* Controls */
+.controls {
+    padding: 10px;
+    border-bottom: 1px solid #E5E5E5;
+}
+
+label {
+    font-weight: bold;
+    margin-bottom: .5em;
+    display: block;
+}
+
+#jt_current-color,
+#customSteps {
+    border: none;
+    background: none;
+    appearance: none;
+    display: block;
+    margin-left: auto;
+    padding: 5px;
+    border-radius: 3px;
+}
+
+#jt_current-color:hover,
+#customSteps:hover {
+    /* background: #E5E5E5; */
+    outline: 1px solid #E5E5E5;
+}
+
+#jt_current-color:focus,
+#customSteps:focus {
+    outline: 2px solid #0094FE;
+}
+
+/* Colour palettes */
+.colours {
+    padding: 20px 10px;
+}
+
+.swatch {
+    width: 20px;
+    height: 20px;
+    overflow: hidden;
+}
