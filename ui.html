@@ -1,25 +1,33 @@
 <style>
 body {
     font-family: sans-serif;
-    font-size: .7em;
+    font-size: .65em;
+    padding: 8px;
+    box-sizing: border-box;
 }
 
 .grid-wrapper {
     display: grid;
-    grid-template-columns: 100px 1fr;
+    grid-template-columns:50% 50%;
+    grid-column-gap: 10px;
+    width: 100%;
 }
 
 /* Controls */
 .controls {
-    padding:0 0 10px;
+    padding:0 10px 10px 0;
     background: #FFF;
     border-bottom: 1px solid #E5E5E5;
+    align-items: flex-end;
+    width: calc(100% - 10px);
 }
 
+.label,
 label {
-    font-weight: bold;
-    margin:  .5em 0;
+    font-weight: 600;
+    margin: 0 0 5px;
     display: block;
+    letter-spacing: .01em;
 }
 button {
     border-radius: 3px;
@@ -27,12 +35,24 @@ button {
     background: none;
     appearance: none;
     display: block;
-    margin: 2px;
+    margin: 1px;
+    padding: 3px 10px
 }
+
+.swatch {
+    padding: 0;
+    width: 100%;
+    height: 15px;
+    display: block;
+    overflow: hidden;
+    border: 2px solid transparent;
+}
+
 #update-color,
 #customSteps {
     margin-left: auto;
     border: 1px solid #E5E5E5;
+    border-radius: 2px;
 }
 
 #update-color:hover,
@@ -42,29 +62,24 @@ button {
 }
 
 #update-color:focus,
-#customSteps:focus {
-    outline: 2px solid #0094FE;
+#customSteps:focus,
+.swatch:focus {
+    outline: none;
+    border: 2px solid #0094FE;
+    border-radius: 2px;
 }
 
 /* Colour palettes */
 #colours {
-    padding: 10px 0;
     display: none;
+    padding: 10px 0;
 }
-#colours.active {
-  display: block;
+.shades {
+  padding-right: 10px;
 }
-
-.swatch {
-    width: 100%;
-    height: 20px;
-    display: block;
-    overflow: hidden;
-}
-
 .palette {
   display: flex;
-  margin-bottom: 1em;
+  margin-bottom: 6px;
   border-bottom: 1px solid #E5E5E5;
   padding: 0 0 5px;
 }
@@ -76,10 +91,9 @@ button {
 <div class="grid-wrapper controls">
   <div class="col">
     <div class="steps">
-        <label for="customSteps">Steps</label>
-        <input type="number" name="quantity" min="3" max="20" id="customSteps" value="5">
+        <label for="customSteps">Steps</div>
+        <input type="number" name="quantity" min="3" max="30" id="customSteps" value="7">
     </div>
-  </div>
   <div class="col">
     <button id="update-color">Update Color</button>
   </div>
@@ -87,33 +101,55 @@ button {
 
 <div id="colours">
   <div class="grid-wrapper">
-    <div class="col">
-        <div id="tints-shades">
-            <label>Shades</label>
-            <div id="shades"></div>
-
-            <label>Tints</label>
-            <div id="tints"></div>
+    <div class="col shades">
+        <div id="tints-shades" class="palette">
+          <div class="grid-wrapper">
+            <div class="col">
+                <div class="label">Tints</div>
+                <div id="tints"></div>
+            </div>
+            <div class="col">
+                <div class="label">Shades</div>
+                <div id="shades"></div>
+            </div>
+          </div>
+        </div>
+        <div id="tones" class="palette">
+          <div class="grid-wrapper">
+            <div class="col">
+                <div class="label">Saturate</div>
+                <div id="saturated"></div>
+            </div>
+            <div class="col">
+                <div class="label">Desaturate</div>
+                <div id="desaturated"></div>
+            </div>
+          </div>
         </div>
     </div>
     <div class="col palettes">
-        <label>Complementary</label>
+        <div class="label">Random</div>
+        <div id="random" class="palette"></div>
+        <div class="label">Complementary</div>
         <div id="complementary" class="palette"></div>
-        <label>Split Complementary</label>
+        <div class="label">Split Complementary</div>
         <div id="split-complementary" class="palette"></div>
-        <label>Triadic</label>
+        <div class="label">Triadic</div>
         <div id="triadic" class="palette"></div>
-        <label>Analagous</label>
+        <div class="label">Analagous</div>
         <div id="analagous" class="palette"></div>
-        <label>Tetradic</label>
+        <div class="label">Tetradic</div>
         <div id="tetradic" class="palette"></div>
     </div>
   </div>
 </div>
+
+
+
 <script>
-  parent.postMessage({ pluginMessage: {
-    type: 'hello'
-  } }, '*');
+parent.postMessage({ pluginMessage: {
+  type: 'hello'
+} }, '*');
 function updateColor() {
     parent.postMessage({ pluginMessage: {
       type: 'update-color',
@@ -136,21 +172,28 @@ function updateColor() {
             coloursWrapper = document.getElementById('colours'),
             tintsWrapper = document.getElementById('tints'),
             shadesWrapper = document.getElementById('shades'),
+            saturatedWrapper = document.getElementById('saturated'),
+            desaturatedWrapper = document.getElementById('desaturated'),
             complementaryWrapper = document.getElementById('complementary'),
             splitComplementaryWrapper = document.getElementById('split-complementary'),
             triadicWrapper = document.getElementById('triadic'),
             analagousWrapper = document.getElementById('analagous'),
             tetradicWrapper = document.getElementById('tetradic'),
+            randomWrapper = document.getElementById('random'),
 
             //colour data
             tints = event.data.pluginMessage.shades.tints,
             shades = event.data.pluginMessage.shades.shades;
+            saturated = event.data.pluginMessage.shades.saturated;
+            desaturated = event.data.pluginMessage.shades.desaturated;
             complementary = event.data.pluginMessage.complementary,
             splitComplementary = event.data.pluginMessage.splitComplementary,
             triadic = event.data.pluginMessage.triadic,
             analagous = event.data.pluginMessage.analagous,
-            tetradic = event.data.pluginMessage.tetradic;
+            tetradic = event.data.pluginMessage.tetradic,
+            random = event.data.pluginMessage.random;
 
+            console.log(event.data.pluginMessage);
       let totalTints = '';
       tints.forEach(function(tint) {
         const rgb = tint.r+','+tint.g+','+tint.b;
@@ -163,6 +206,20 @@ function updateColor() {
         const rgb = shade.r+','+shade.g+','+shade.b;
         totalShades +=  '<button class="tint swatch" style="background-color:rgb('+rgb+')" data-r="'+shade.r+ '" data-g="'+shade.g+ '" data-b="'+shade.b+ '"></button>';
         return totalShades;
+      });
+
+      let totalSaturated = '';
+      saturated.forEach(function(saturated) {
+        const rgb = saturated.r+','+saturated.g+','+saturated.b;
+        totalSaturated +=  '<button class="tint swatch" style="background-color:rgb('+rgb+')" data-r="'+saturated.r+ '" data-g="'+saturated.g+ '" data-b="'+saturated.b+ '"></button>';
+        return totalSaturated;
+      });
+
+      let totalDesaturated = '';
+      desaturated.forEach(function(desaturated) {
+        const rgb = desaturated.r+','+desaturated.g+','+desaturated.b;
+        totalDesaturated +=  '<button class="tint swatch" style="background-color:rgb('+rgb+')" data-r="'+desaturated.r+ '" data-g="'+desaturated.g+ '" data-b="'+desaturated.b+ '"></button>';
+        return totalSaturated;
       });
 
       let totalComps = '';
@@ -200,18 +257,28 @@ function updateColor() {
         return tetradicComps;
       });
 
+      let randomComps = '';
+      random.forEach(function(comp) {
+        const rgb = comp.r+','+comp.g+','+comp.b;
+        randomComps +=  '<button class="swatch" style="background-color:rgb('+rgb+')" data-r="'+comp.r+ '" data-g="'+comp.g+ '" data-b="'+comp.b+ '"></button>';
+        return randomComps;
+      });
+
       //Update the UI then add additional click events to the swatches
       let updateUI = new Promise((resolve, reject) => {
-        shadesWrapper.innerHTML = totalShades;
-        tintsWrapper.innerHTML = totalTints;
-        complementaryWrapper.innerHTML = totalComps;
-        splitComplementaryWrapper.innerHTML = splitComps;
-        triadicWrapper.innerHTML = triadicComps;
-        analagousWrapper.innerHTML = analagousComps;
-        tetradicWrapper.innerHTML = tetradicComps;
-        coloursWrapper.setAttribute("style", "display:block;");
+          shadesWrapper.innerHTML = totalShades;
+          tintsWrapper.innerHTML = totalTints;
+          saturatedWrapper.innerHTML = totalSaturated;
+          desaturatedWrapper.innerHTML = totalDesaturated;
+          complementaryWrapper.innerHTML = totalComps;
+          splitComplementaryWrapper.innerHTML = splitComps;
+          triadicWrapper.innerHTML = triadicComps;
+          analagousWrapper.innerHTML = analagousComps;
+          tetradicWrapper.innerHTML = tetradicComps;
+          randomWrapper.innerHTML = randomComps;
+          coloursWrapper.setAttribute("style", "display:block;");
 
-        resolve("✨Colours successfully updated ✨");
+        resolve("✨ Colours successfully updated  ✨");
       });
 
       updateUI.then((successMessage) => {

@@ -1,5 +1,5 @@
 
-figma.showUI(__html__, { width: 300, height: 400 });
+figma.showUI(__html__, { width: 270, height: 380 });
 
 //utilities
 // https://stackoverflow.com/questions/36721830/convert-hsl-to-rgb-and-hex/54014428#54014428
@@ -14,6 +14,7 @@ function rgb2hsl(r, g, b) {
   let h = n && ((a == r) ? (g - b) / n : ((a == g) ? 2 + (b - r) / n : 4 + (r - g) / n));
   return [60 * (h < 0 ? h + 6 : h), f ? n / f : 0, (a + a - n) / 2];
 }
+// https://www.figma.com/plugin-docs/editing-properties/
 function clone(val) {
   const type = typeof val
   if (val === null) {
@@ -36,22 +37,33 @@ function clone(val) {
   }
   throw 'unknown'
 }
+// https://www.w3schools.com/js/js_random.asp
+function getRndInteger(min, max) {
+  return Math.floor(Math.random() * (max - min) ) + min;
+}
 
 
-//palette functions
+
+
+
+/*!
+♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡
+♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥
+Palette Functions
+♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥
+♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡
+*/
 function tintsNshades(r, g, b, steps) {
   let i = 0,
       shades = [],
       hsl = rgb2hsl(r, g, b);
 
-  //tints
   if (steps < 0) {
     //shades
     for (i = 0; i > steps; i--) {
-      let diff = ((1 - hsl[2]) / steps) * i,
-          newLightness = Math.abs(hsl[2] - diff),
+      let diff = (hsl[2] / steps) * i,
+          newLightness = hsl[2] - diff,
           newShade = hsl2rgb(hsl[0], hsl[1],newLightness);
-          console.log(newLightness);
       var shade = {
         r: Math.ceil(newShade[0] * 255),
         g: Math.ceil(newShade[1] * 255),
@@ -63,8 +75,43 @@ function tintsNshades(r, g, b, steps) {
     //tints
     for (i = 0; i < steps; i++) {
       let diff = ((1 - hsl[2]) / steps) * i,
-          newLightness = hsl[2]  + diff,
+          newLightness = hsl[2] + diff,
           newShade = hsl2rgb(hsl[0], hsl[1],newLightness);
+      var shade = {
+        r: Math.ceil(newShade[0] * 255),
+        g: Math.ceil(newShade[1] * 255),
+        b: Math.ceil(newShade[2] * 255)
+      }
+      shades.push(shade);
+    }
+  }
+  return shades;
+}
+
+function tones(r, g, b, steps) {
+  let i = 0,
+      shades = [],
+      hsl = rgb2hsl(r, g, b);
+
+  if (steps < 0) {
+    //desaturate
+    for (i = 0; i > steps; i--) {
+      let diff = (hsl[1] / steps) * i,
+          newSat = hsl[1] - diff,
+          newShade = hsl2rgb(hsl[0], newSat,hsl[2]);
+      var shade = {
+        r: Math.ceil(newShade[0] * 255),
+        g: Math.ceil(newShade[1] * 255),
+        b: Math.ceil(newShade[2] * 255)
+      }
+      shades.push(shade);
+    }
+  } else {
+    //saturate
+    for (i = 0; i < steps; i++) {
+      let diff = ((1 - hsl[1]) / steps) * i,
+          newSat = hsl[1] + diff,
+          newShade = hsl2rgb(hsl[0], newSat,hsl[2]);
       var shade = {
         r: Math.ceil(newShade[0] * 255),
         g: Math.ceil(newShade[1] * 255),
@@ -87,104 +134,117 @@ function complementaryPalette(r, g, b) {
     g: Math.ceil(g * 255),
     b: Math.ceil(b * 255)
   }
+
   var complementaryShade = {
     r: Math.ceil(newShade[0] * 255),
     g: Math.ceil(newShade[1] * 255),
     b: Math.ceil(newShade[2] * 255),
   }
+
   shades.push(currentShade, complementaryShade);
   return shades;
 }
 
 function splitComplementaryPalette(r, g, b) {
   let shades = [],
-    hsl = rgb2hsl(r, g, b),
-    newR1 = (180 + 15) + hsl[0],
-    newR2 = (180 - 15) + hsl[0],
-    newShade1 = hsl2rgb(newR1, hsl[1], hsl[2]),
-    newShade2 = hsl2rgb(newR2, hsl[1], hsl[2]);
+      hsl = rgb2hsl(r, g, b),
+      newR1 = (180 + 15) + hsl[0],
+      newR2 = (180 - 15) + hsl[0],
+      newShade1 = hsl2rgb(newR1, hsl[1], hsl[2]),
+      newShade2 = hsl2rgb(newR2, hsl[1], hsl[2]);
 
   var currentShade = {
     r: Math.ceil(r * 255),
     g: Math.ceil(g * 255),
     b: Math.ceil(b * 255)
   }
+
   var complementaryShade1 = {
     r: Math.ceil(newShade1[0] * 255),
     g: Math.ceil(newShade1[1] * 255),
     b: Math.ceil(newShade1[2] * 255),
   }
+
   var complementaryShade2 = {
     r: Math.ceil(newShade2[0] * 255),
     g: Math.ceil(newShade2[1] * 255),
     b: Math.ceil(newShade2[2] * 255),
   }
+
   shades.push(currentShade, complementaryShade1, complementaryShade2);
   return shades;
 }
 
 function triadicPalette(r, g, b) {
   let shades = [],
-    hsl = rgb2hsl(r, g, b),
-    newR1 = (180 + 45) + hsl[0],
-    newR2 = (180 - 45) + hsl[0],
-    newShade1 = hsl2rgb(newR1, hsl[1], hsl[2]),
-    newShade2 = hsl2rgb(newR2, hsl[1], hsl[2]);
+      hsl = rgb2hsl(r, g, b),
+      newR1 = (180 + 45) + hsl[0],
+      newR2 = (180 - 45) + hsl[0],
+      newShade1 = hsl2rgb(newR1, hsl[1], hsl[2]),
+      newShade2 = hsl2rgb(newR2, hsl[1], hsl[2]);
 
   var currentShade = {
     r: Math.ceil(r * 255),
     g: Math.ceil(g * 255),
     b: Math.ceil(b * 255)
   }
+
   var complementaryShade1 = {
     r: Math.ceil(newShade1[0] * 255),
     g: Math.ceil(newShade1[1] * 255),
     b: Math.ceil(newShade1[2] * 255),
   }
+
   var complementaryShade2 = {
     r: Math.ceil(newShade2[0] * 255),
     g: Math.ceil(newShade2[1] * 255),
     b: Math.ceil(newShade2[2] * 255),
   }
+
   shades.push(currentShade, complementaryShade1, complementaryShade2);
   return shades;
 }
 
 function analagousPalette(r, g, b) {
   let shades = [],
-    hsl = rgb2hsl(r, g, b),
-    newR1 = 30 + hsl[0],
-    newR2 = hsl[0] - 30,
-    newShade1 = hsl2rgb(newR1, hsl[1], hsl[2]),
-    newShade2 = hsl2rgb(newR2, hsl[1], hsl[2]);
+      hsl = rgb2hsl(r, g, b),
+      newR1 = 30 + hsl[0],
+      newR2 = hsl[0] - 30,
+      newShade1 = hsl2rgb(newR1, hsl[1], hsl[2]),
+      newShade2 = hsl2rgb(newR2, hsl[1], hsl[2]);
+
   var currentShade = {
     r: Math.ceil(r * 255),
     g: Math.ceil(g * 255),
     b: Math.ceil(b * 255)
   }
+
   var complementaryShade1 = {
     r: Math.ceil(newShade1[0] * 255),
     g: Math.ceil(newShade1[1] * 255),
     b: Math.ceil(newShade1[2] * 255),
   }
+
   var complementaryShade2 = {
     r: Math.ceil(newShade2[0] * 255),
     g: Math.ceil(newShade2[1] * 255),
     b: Math.ceil(newShade2[2] * 255),
   }
+
   shades.push(currentShade, complementaryShade1, complementaryShade2);
   return shades;
 }
 
 function tetradicPalette(r, g, b) {
   let shades = [],
-    hsl = rgb2hsl(r, g, b),
-    newR1 = 90 + hsl[0],
-    newR2 = 180 + hsl[0],
-    newR3 = 270 + hsl[0],
-    newShade1 = hsl2rgb(newR1, hsl[1], hsl[2]),
-    newShade2 = hsl2rgb(newR2, hsl[1], hsl[2]),
-    newShade3 = hsl2rgb(newR3, hsl[1], hsl[2]);
+      hsl = rgb2hsl(r, g, b),
+      newR1 = 90 + hsl[0],
+      newR2 = 180 + hsl[0],
+      newR3 = 270 + hsl[0],
+      newShade1 = hsl2rgb(newR1, hsl[1], hsl[2]),
+      newShade2 = hsl2rgb(newR2, hsl[1], hsl[2]),
+      newShade3 = hsl2rgb(newR3, hsl[1], hsl[2]);
+
   var currentShade = {
     r: Math.ceil(r * 255),
     g: Math.ceil(g * 255),
@@ -196,73 +256,216 @@ function tetradicPalette(r, g, b) {
     g: Math.ceil(newShade1[1] * 255),
     b: Math.ceil(newShade1[2] * 255),
   }
+
   var complementaryShade2 = {
     r: Math.ceil(newShade2[0] * 255),
     g: Math.ceil(newShade2[1] * 255),
     b: Math.ceil(newShade2[2] * 255),
   }
+
   var complementaryShade3 = {
     r: Math.ceil(newShade3[0] * 255),
     g: Math.ceil(newShade3[1] * 255),
     b: Math.ceil(newShade3[2] * 255),
   }
+
   shades.push(currentShade, complementaryShade1, complementaryShade2, complementaryShade3);
   return shades;
 }
 
-//UI function
-// if (figma.currentPage.selection.length === 1) {
-  figma.ui.onmessage = msg => {
-    if (msg.type === 'hello') {
-      figma.notify("Select an element with a fill then click on 'Update Color'.")
-    }
+function randomPalette(r, g, b) {
+  let shades = [],
+      hsl = rgb2hsl(r, g, b),
+      kind = getRndInteger(1,4);
+      // kind = 2;
 
-    if (msg.type === 'update-color') {
+  //complementary
+  if ( kind === 1 ) {
+    var newR1 = getRndInteger(0,15) + hsl[0],
+        newR2 = getRndInteger(15,60) + hsl[0],
+        newR3 = getRndInteger(240,270) + hsl[0],
+        newR4 = getRndInteger(270,300) + hsl[0],
+        newSat1 = getRndInteger(hsl[1]* 100, (hsl[1]* 100 -20))*.01,
+        newSat2 = getRndInteger(hsl[1]* 100, (hsl[1]* 100 -30))*.01,
+        newSat3 = getRndInteger(hsl[1]* 100, (hsl[1]* 100 -40))*.01,
+        newSat4 = getRndInteger(hsl[1]* 100, (hsl[1]* 100 -30))*.01,
+        newLight1 = getRndInteger(hsl[2]* 100,(hsl[2]* 100-10))*.01,
+        newLight2 = getRndInteger(hsl[2]* 100,(hsl[2]* 100+20))*.01,
+        newLight3 = getRndInteger(hsl[2]* 100,(hsl[2]* 100-10))*.01,
+        newLight4 = getRndInteger(hsl[2]* 100,(hsl[2]* 100+20))*.01,
+        newShade1 = hsl2rgb(newR1, newSat1, newLight1),
+        newShade2 = hsl2rgb(newR2, newSat2, newLight2),
+        newShade3 = hsl2rgb(newR3, newSat3, newLight3),
+        newShade4 = hsl2rgb(newR4, newSat4, newLight4);
+  //analagous
+  } else if ( kind === 2 ) {
+    var newR1 = getRndInteger(0,15) + hsl[0],
+        newR2 = getRndInteger(0,30) + hsl[0],
+        newR3 = getRndInteger(0,-15) + hsl[0],
+        newR4 = getRndInteger(0,-35) + hsl[0],
+        newSat1 = getRndInteger(hsl[1]* 100, (hsl[1]* 100 -10))*.01,
+        newSat2 = getRndInteger(hsl[1]* 100, (hsl[1]* 100-20))*.01,
+        newSat3 = getRndInteger(hsl[1]* 100, (hsl[1]* 100-30))*.01,
+        newSat4 = getRndInteger(hsl[1]* 100, (hsl[1]* 100-40))*.01,
+        newLight1 = getRndInteger(hsl[2]* 100,(hsl[2]* 100+10))*.01,
+        newLight2 = getRndInteger(hsl[2]* 100,(hsl[2]* 100-10))*.01,
+        newLight3 = getRndInteger(hsl[2]* 100,(hsl[2]* 100-20))*.01,
+        newLight4 = getRndInteger(hsl[2]* 100,(hsl[2]* 100+20))*.01,
+        newShade1 = hsl2rgb(newR1, newSat1, newLight1),
+        newShade2 = hsl2rgb(newR2, newSat2, newLight2),
+        newShade3 = hsl2rgb(newR3, newSat3, newLight3),
+        newShade4 = hsl2rgb(newR4, newSat4, newLight4);
+  //triadic
+  } else {
+    var newR1 = getRndInteger(10,40) + hsl[0],
+        newR2 = getRndInteger(70,80) + hsl[0],
+        newR3 = getRndInteger(180,200) + hsl[0],
+        newR4 = getRndInteger(180,160) + hsl[0],
+        newSat1 = getRndInteger(hsl[1], (hsl[1]* 100)-10)*.01,
+        newSat2 = getRndInteger(hsl[1], (hsl[1]* 100)-30)*.01,
+        newSat3 = getRndInteger(hsl[1], (hsl[1]* 100)-60)*.01,
+        newSat4 = getRndInteger(hsl[1], (hsl[1]* 100)-70)*.01,
+        newLight1 = getRndInteger(hsl[2]* 100,(hsl[2]* 100-10))*.01,
+        newLight2 = getRndInteger(hsl[2]* 100,(hsl[2]* 100+10))*.01,
+        newLight3 = getRndInteger(hsl[2]* 100,(hsl[2]* 100-10))*.01,
+        newLight4 = getRndInteger(hsl[2]* 100,(hsl[2]* 100+10))*.01,
+        newShade1 = hsl2rgb(newR1, newSat1, newLight1),
+        newShade2 = hsl2rgb(newR2, newSat2, newLight2),
+        newShade3 = hsl2rgb(newR3, newSat3, newLight3),
+        newShade4 = hsl2rgb(newR4, newSat4, newLight4);
+  }
 
-      for (const node of figma.currentPage.selection) {
-        const color = node['fills'][0]['color'],
-              r = color['r'],
-              g = color['g'],
-              b = color['b'],
-              steps = msg.customSteps;
-        var colorObject = {
-          shades: {
-            tints: tintsNshades(r, g, b, steps),
-            shades: tintsNshades(r, g, b, -steps),
-          },
-          rgb: {
-            r: r,
-            g: g,
-            b: b,
-          },
-          complementary: complementaryPalette(r, g, b),
-          splitComplementary: splitComplementaryPalette(r, g, b),
-          triadic: triadicPalette(r, g, b),
-          analagous: analagousPalette(r, g, b),
-          tetradic: tetradicPalette(r, g, b)
-        }
+  var currentShade = {
+    r: Math.ceil(r * 255),
+    g: Math.ceil(g * 255),
+    b: Math.ceil(b * 255)
+  }
 
-        if (steps > 20) {
-          figma.notify('Please keep steps under 20.')
-        } else {
-          figma.ui.postMessage(colorObject);
-        }
+  var complementaryShade1 = {
+    r: Math.ceil(newShade1[0] * 255),
+    g: Math.ceil(newShade1[1] * 255),
+    b: Math.ceil(newShade1[2] * 255),
+  }
 
+  var complementaryShade2 = {
+    r: Math.ceil(newShade2[0] * 255),
+    g: Math.ceil(newShade2[1] * 255),
+    b: Math.ceil(newShade2[2] * 255),
+  }
+
+  var complementaryShade3 = {
+    r: Math.ceil(newShade3[0] * 255),
+    g: Math.ceil(newShade3[1] * 255),
+    b: Math.ceil(newShade3[2] * 255),
+  }
+
+  var complementaryShade4 = {
+    r: Math.ceil(newShade4[0] * 255),
+    g: Math.ceil(newShade4[1] * 255),
+    b: Math.ceil(newShade4[2] * 255),
+  }
+
+  shades.push(currentShade, complementaryShade1, complementaryShade2, complementaryShade3,complementaryShade4);
+  return shades;
+}
+
+//UI functionality
+figma.ui.onmessage = msg => {
+  //showa message on init
+  if (msg.type === 'hello') {
+    figma.notify("🦄 Select an element with a fill then click on 'Update Color' 💫")
+  }
+
+  //refresh the data to update the colour palettes
+  if (msg.type === 'update-color') {
+    for (const node of figma.currentPage.selection) {
+      //check for a fill
+      if (node['fills']!== undefined && node['fills'].length !== 0) {
+        var color = node['fills'][0]['color'],
+            r = color['r'],
+            g = color['g'],
+            b = color['b'],
+            steps = msg.customSteps;
+      //check for a bacgkground fill
+      } else if (node['backgrounds'] !== undefined && node['fills'] === undefined) {
+        var color = node['backgrounds'][0]['color'],
+            r = color['r'],
+            g = color['g'],
+            b = color['b'],
+            steps = msg.customSteps;
+      // set a default value
+      } else  {
+        var color = {r: 0.7, g: 0.7, b: 0.7},
+            r = 0.7,
+            g = 0.7,
+            b = 0.7,
+            steps = msg.customSteps;
       }
-    }
 
-    if (msg.type === 'change-color') {
-      for (const node of figma.currentPage.selection) {
-        if ("fills" in node) {
-          const fills = clone(node.fills);
-          fills[0].color.r = parseInt(msg.r) / 255;
-          fills[0].color.g = parseInt(msg.g) / 255;
-          fills[0].color.b = parseInt(msg.b) / 255;
+      var colorObject = {
+        shades: {
+          tints: tintsNshades(r, g, b, steps),
+          shades: tintsNshades(r, g, b, -steps),
+          saturated: tones(r, g, b, steps),
+          desaturated: tones(r, g, b, -steps),
+        },
+        rgb: {
+          r: r,
+          g: g,
+          b: b,
+        },
+        complementary: complementaryPalette(r, g, b),
+        splitComplementary: splitComplementaryPalette(r, g, b),
+        triadic: triadicPalette(r, g, b),
+        analagous: analagousPalette(r, g, b),
+        tetradic: tetradicPalette(r, g, b),
+        random: randomPalette(r, g, b)
+      }
+      //limit the steps to under 30
+      if (steps > 30) {
+        figma.notify('❌Please keep steps under 30 ❌')
+      } else {
+        figma.ui.postMessage(colorObject);
+      }
+
+    }
+  }
+
+  //change a selection's fill if a swatch is clicked
+  if (msg.type === 'change-color') {
+    for (const node of figma.currentPage.selection) {
+      //if selection has a fill
+      if (node['fills']!== undefined && node['fills'].length !== 0 && "fills" in node) {
+        const fills = clone(node.fills);
+              fills[0].color.r = parseInt(msg.r) / 255;
+              fills[0].color.g = parseInt(msg.g) / 255;
+              fills[0].color.b = parseInt(msg.b) / 255;
+
+        if ( fills[0].color.r > 0 && fills[0].color.g > 0 && fills[0].color.b > 0) {
           node.fills = fills;
+        } else {
+          fills[0].color.r = 0;
+          fills[0].color.g = 0;
+          fills[0].color.b = 0;
         }
+      //if selection has a fill or background
+      } else if (node['backgrounds'] !== undefined && node['fills'] === undefined && "backgrounds" in node){
+        const fills = clone(node.backgrounds);
+              fills[0].color.r = parseInt(msg.r) / 255;
+              fills[0].color.g = parseInt(msg.g) / 255;
+              fills[0].color.b = parseInt(msg.b) / 255;
+
+        if ( fills[0].color.r > 0 && fills[0].color.g > 0 && fills[0].color.b > 0) {
+          node.backgrounds = fills;
+        } else {
+          fills[0].color.r = 0;
+          fills[0].color.g = 0;
+          fills[0].color.b = 0;
+        }
+      } else  {
+        figma.notify('❌ Make sure your element has a fill or background first so it is updateable. ❌')
       }
     }
   }
-// } else {
-//   figma.notify('Please select an element and restart the plugin.')
-// }
+}
+
