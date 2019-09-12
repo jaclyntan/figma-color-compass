@@ -207,19 +207,35 @@ function tetradicPalette(r, g, b) {
     return shades;
 }
 function randomPalette(r, g, b) {
-    let shades = [], hsl = rgb2hsl(r, g, b), kind = getRndInteger(1, 4);
-    // kind = 2;
+    let shades = [], hsl = rgb2hsl(r, g, b), kind = getRndInteger(1, 8);
+    // kind = 1
     //complementary
     if (kind === 1) {
-        var newR1 = getRndInteger(0, 15) + hsl[0], newR2 = getRndInteger(15, 60) + hsl[0], newR3 = getRndInteger(240, 270) + hsl[0], newR4 = getRndInteger(270, 300) + hsl[0], newSat1 = getRndInteger(hsl[1] * 100, (hsl[1] * 100 - 20)) * .01, newSat2 = getRndInteger(hsl[1] * 100, (hsl[1] * 100 - 30)) * .01, newSat3 = getRndInteger(hsl[1] * 100, (hsl[1] * 100 - 40)) * .01, newSat4 = getRndInteger(hsl[1] * 100, (hsl[1] * 100 - 30)) * .01, newLight1 = getRndInteger(hsl[2] * 100, (hsl[2] * 100 - 10)) * .01, newLight2 = getRndInteger(hsl[2] * 100, (hsl[2] * 100 + 20)) * .01, newLight3 = getRndInteger(hsl[2] * 100, (hsl[2] * 100 - 10)) * .01, newLight4 = getRndInteger(hsl[2] * 100, (hsl[2] * 100 + 20)) * .01, newShade1 = hsl2rgb(newR1, newSat1, newLight1), newShade2 = hsl2rgb(newR2, newSat2, newLight2), newShade3 = hsl2rgb(newR3, newSat3, newLight3), newShade4 = hsl2rgb(newR4, newSat4, newLight4);
+        var newR1 = getRndInteger(0, 30) + hsl[0], newR2 = getRndInteger(170, 190) + hsl[0], newR3 = getRndInteger(160, 180) + hsl[0], newR4 = getRndInteger(180, 200) + hsl[0], newSat1 = getRndInteger(hsl[1] * 100, 50) * .01, newSat2 = getRndInteger(hsl[1] * 100 - 30, 50) * .01, newSat3 = getRndInteger(hsl[1] * 100 - 30, 10) * .01, newSat4 = getRndInteger(hsl[1] * 100 - 30, 5) * .01, newLight1 = getRndInteger(hsl[2] * 100 + 10, 90) * .01, newLight2 = getRndInteger(hsl[2] * 100, 70) * .01, newLight3 = getRndInteger(hsl[2] * 100, 30) * .01, newLight4 = getRndInteger(hsl[2] * 100, 10) * .01, newShade1 = hsl2rgb(newR1, newSat1, newLight1), newShade2 = hsl2rgb(newR2, newSat2, newLight2), newShade3 = hsl2rgb(newR3, newSat3, newLight3), newShade4 = hsl2rgb(newR4, newSat4, newLight4);
         //analagous
     }
     else if (kind === 2) {
-        var newR1 = getRndInteger(0, 15) + hsl[0], newR2 = getRndInteger(0, 30) + hsl[0], newR3 = getRndInteger(0, -15) + hsl[0], newR4 = getRndInteger(0, -35) + hsl[0], newSat1 = getRndInteger(hsl[1] * 100, (hsl[1] * 100 - 10)) * .01, newSat2 = getRndInteger(hsl[1] * 100, (hsl[1] * 100 - 20)) * .01, newSat3 = getRndInteger(hsl[1] * 100, (hsl[1] * 100 - 30)) * .01, newSat4 = getRndInteger(hsl[1] * 100, (hsl[1] * 100 - 40)) * .01, newLight1 = getRndInteger(hsl[2] * 100, (hsl[2] * 100 + 10)) * .01, newLight2 = getRndInteger(hsl[2] * 100, (hsl[2] * 100 - 10)) * .01, newLight3 = getRndInteger(hsl[2] * 100, (hsl[2] * 100 - 20)) * .01, newLight4 = getRndInteger(hsl[2] * 100, (hsl[2] * 100 + 20)) * .01, newShade1 = hsl2rgb(newR1, newSat1, newLight1), newShade2 = hsl2rgb(newR2, newSat2, newLight2), newShade3 = hsl2rgb(newR3, newSat3, newLight3), newShade4 = hsl2rgb(newR4, newSat4, newLight4);
+        var newR1 = getRndInteger(0, 20) + hsl[0], newR2 = getRndInteger(0, 30) + hsl[0], newR3 = getRndInteger(0, -15) + hsl[0], newR4 = getRndInteger(0, -35) + hsl[0], newSat1 = getRndInteger(hsl[1] * 100, 70) * .01, newSat2 = getRndInteger(hsl[1] * 100, 50) * .01, newSat3 = getRndInteger(hsl[1] * 100, 20) * .01, newSat4 = getRndInteger(hsl[1] * 100, 10) * .01, newLight1 = getRndInteger(hsl[2] * 100, 90) * .01, newLight2 = getRndInteger(hsl[2] * 100, 60) * .01, newLight3 = getRndInteger(hsl[2] * 100, 50) * .01, newLight4 = getRndInteger(hsl[2] * 100, 30) * .01, newShade1 = hsl2rgb(newR1, newSat1, newLight1), newShade2 = hsl2rgb(newR2, newSat2, newLight2), newShade3 = hsl2rgb(newR3, newSat3, newLight3), newShade4 = hsl2rgb(newR4, newSat4, newLight4);
         //triadic
     }
-    else {
-        var newR1 = getRndInteger(10, 40) + hsl[0], newR2 = getRndInteger(70, 80) + hsl[0], newR3 = getRndInteger(180, 200) + hsl[0], newR4 = getRndInteger(180, 160) + hsl[0], newSat1 = getRndInteger(hsl[1], (hsl[1] * 100) - 10) * .01, newSat2 = getRndInteger(hsl[1], (hsl[1] * 100) - 30) * .01, newSat3 = getRndInteger(hsl[1], (hsl[1] * 100) - 60) * .01, newSat4 = getRndInteger(hsl[1], (hsl[1] * 100) - 70) * .01, newLight1 = getRndInteger(hsl[2] * 100, (hsl[2] * 100 - 10)) * .01, newLight2 = getRndInteger(hsl[2] * 100, (hsl[2] * 100 + 10)) * .01, newLight3 = getRndInteger(hsl[2] * 100, (hsl[2] * 100 - 10)) * .01, newLight4 = getRndInteger(hsl[2] * 100, (hsl[2] * 100 + 10)) * .01, newShade1 = hsl2rgb(newR1, newSat1, newLight1), newShade2 = hsl2rgb(newR2, newSat2, newLight2), newShade3 = hsl2rgb(newR3, newSat3, newLight3), newShade4 = hsl2rgb(newR4, newSat4, newLight4);
+    else if (kind === 3) {
+        var newR1 = getRndInteger(10, 20) + hsl[0], newR2 = getRndInteger(20, 45) + hsl[0], newR3 = getRndInteger(170, 190) + hsl[0], newR4 = getRndInteger(180, 200) + hsl[0], newSat1 = getRndInteger(hsl[1] * 100, 70) * .01, newSat2 = getRndInteger(hsl[1] * 100, 50) * .01, newSat3 = getRndInteger(hsl[1] * 100, 20) * .01, newSat4 = getRndInteger(hsl[1] * 100, 10) * .01, newLight1 = getRndInteger(hsl[2] * 100, 90) * .01, newLight2 = getRndInteger(hsl[2] * 100, 70) * .01, newLight3 = getRndInteger(hsl[2] * 100, 30) * .01, newLight4 = getRndInteger(hsl[2] * 100, 10) * .01, newShade1 = hsl2rgb(newR1, newSat1, newLight1), newShade2 = hsl2rgb(newR2, newSat2, newLight2), newShade3 = hsl2rgb(newR3, newSat3, newLight3), newShade4 = hsl2rgb(newR4, newSat4, newLight4);
+    }
+    else if (kind === 4) {
+        //accent
+        var newR1 = getRndInteger(10, 40) + hsl[0], newR2 = getRndInteger(50, 90) + hsl[0], newR3 = getRndInteger(70, 100) + hsl[0], newR4 = getRndInteger(70, 110) + hsl[0], newSat1 = getRndInteger(hsl[1] * 100, 40) * .01, newSat2 = getRndInteger(hsl[1] * 100, 30) * .01, newSat3 = getRndInteger(hsl[1] * 100, 20) * .01, newSat4 = getRndInteger(hsl[1] * 100, 10) * .01, newLight1 = getRndInteger(hsl[2] * 100, 70) * .01, newLight2 = getRndInteger(hsl[2] * 100, 50) * .01, newLight3 = getRndInteger(hsl[2] * 100, 30) * .01, newLight4 = getRndInteger(hsl[2] * 100, 10) * .01, newShade1 = hsl2rgb(newR1, newSat1, newLight1), newShade2 = hsl2rgb(newR2, newSat2, newLight2), newShade3 = hsl2rgb(newR3, newSat3, newLight3), newShade4 = hsl2rgb(newR4, newSat4, newLight4);
+    }
+    else if (kind === 5) {
+        //accent 90degrees negative
+        var newR1 = getRndInteger(0, 30) + hsl[0], newR2 = getRndInteger(-80, -100) + hsl[0], newR3 = getRndInteger(-90, -120) + hsl[0], newR4 = getRndInteger(-100, -120) + hsl[0], newSat1 = getRndInteger(hsl[1] * 100, 80) * .01, newSat2 = getRndInteger(hsl[1] * 100, 60) * .01, newSat3 = getRndInteger(hsl[1] * 100, 40) * .01, newSat4 = getRndInteger(hsl[1] * 100, 30) * .01, newLight1 = getRndInteger(hsl[2] * 100, 90) * .01, newLight2 = getRndInteger(hsl[2] * 100, 80) * .01, newLight3 = getRndInteger(hsl[2] * 100, 50) * .01, newLight4 = getRndInteger(hsl[2] * 100, 10) * .01, newShade1 = hsl2rgb(newR1, newSat1, newLight1), newShade2 = hsl2rgb(newR2, newSat2, newLight2), newShade3 = hsl2rgb(newR3, newSat3, newLight3), newShade4 = hsl2rgb(newR4, newSat4, newLight4);
+    }
+    else if (kind === 6) {
+        //accent 90degrees positive
+        var newR1 = getRndInteger(0, 30) + hsl[0], newR2 = getRndInteger(80, 100) + hsl[0], newR3 = getRndInteger(90, 120) + hsl[0], newR4 = getRndInteger(100, 120) + hsl[0], newSat1 = getRndInteger(hsl[1] * 100, 80) * .01, newSat2 = getRndInteger(hsl[1] * 100, 60) * .01, newSat3 = getRndInteger(hsl[1] * 100, 40) * .01, newSat4 = getRndInteger(hsl[1] * 100, 30) * .01, newLight1 = getRndInteger(hsl[2] * 100, 90) * .01, newLight2 = getRndInteger(hsl[2] * 100, 50) * .01, newLight3 = getRndInteger(hsl[2] * 100, 30) * .01, newLight4 = getRndInteger(hsl[2] * 100, 10) * .01, newShade1 = hsl2rgb(newR1, newSat1, newLight1), newShade2 = hsl2rgb(newR2, newSat2, newLight2), newShade3 = hsl2rgb(newR3, newSat3, newLight3), newShade4 = hsl2rgb(newR4, newSat4, newLight4);
+    }
+    else if (kind === 7) {
+        //accent 260ish
+        var newR1 = getRndInteger(0, 10) + hsl[0], newR2 = getRndInteger(240, 250) + hsl[0], newR3 = getRndInteger(240, 250) + hsl[0], newR4 = getRndInteger(230, 260) + hsl[0], newSat1 = getRndInteger(hsl[1] * 100, 90) * .01, newSat2 = getRndInteger(hsl[1] * 100, 90) * .01, newSat3 = getRndInteger(hsl[1] * 100, 60) * .01, newSat4 = getRndInteger(hsl[1] * 100, 10) * .01, newLight1 = getRndInteger(hsl[2] * 100 + 10, 90) * .01, newLight2 = getRndInteger(hsl[2] * 100 + 10, 90) * .01, newLight3 = getRndInteger(hsl[2] * 100, 70) * .01, newLight4 = getRndInteger(hsl[2] * 100 - 10, 10) * .01, newShade1 = hsl2rgb(newR1, newSat1, newLight1), newShade2 = hsl2rgb(newR2, newSat2, newLight2), newShade3 = hsl2rgb(newR3, newSat3, newLight3), newShade4 = hsl2rgb(newR4, newSat4, newLight4);
     }
     var currentShade = {
         r: Math.ceil(r * 255),
@@ -255,7 +271,7 @@ figma.ui.onmessage = msg => {
     if (msg.type === 'hello') {
         figma.notify("🦄 Select an element with a fill then click on 'Update Color' 💫");
     }
-    //refresh the data to update the colour palettes
+    //refresh the data to update the color palettes
     if (msg.type === 'update-color') {
         for (const node of figma.currentPage.selection) {
             //check for a fill
@@ -271,23 +287,23 @@ figma.ui.onmessage = msg => {
                 var color = { r: 0.7, g: 0.7, b: 0.7 }, r = 0.7, g = 0.7, b = 0.7, steps = msg.customSteps;
             }
             var colorObject = {
-                shades: {
+                palettes: {
+                    random: randomPalette(r, g, b),
                     tints: tintsNshades(r, g, b, steps),
                     shades: tintsNshades(r, g, b, -steps),
                     saturated: tones(r, g, b, steps),
                     desaturated: tones(r, g, b, -steps),
+                    complementary: complementaryPalette(r, g, b),
+                    splitComplementary: splitComplementaryPalette(r, g, b),
+                    triadic: triadicPalette(r, g, b),
+                    analagous: analagousPalette(r, g, b),
+                    tetradic: tetradicPalette(r, g, b)
                 },
                 rgb: {
                     r: r,
                     g: g,
                     b: b,
-                },
-                complementary: complementaryPalette(r, g, b),
-                splitComplementary: splitComplementaryPalette(r, g, b),
-                triadic: triadicPalette(r, g, b),
-                analagous: analagousPalette(r, g, b),
-                tetradic: tetradicPalette(r, g, b),
-                random: randomPalette(r, g, b)
+                }
             };
             //limit the steps to under 30
             if (steps > 30) {
@@ -307,7 +323,8 @@ figma.ui.onmessage = msg => {
                 fills[0].color.r = parseInt(msg.r) / 255;
                 fills[0].color.g = parseInt(msg.g) / 255;
                 fills[0].color.b = parseInt(msg.b) / 255;
-                if (fills[0].color.r > 0 && fills[0].color.g > 0 && fills[0].color.b > 0) {
+                if (fills[0].color.r > 0 && fills[0].color.g > 0 && fills[0].color.b > 0 &&
+                    fills[0].color.r < 1 && fills[0].color.g < 1 && fills[0].color.b < 1) {
                     node.fills = fills;
                 }
                 else {
@@ -322,7 +339,8 @@ figma.ui.onmessage = msg => {
                 fills[0].color.r = parseInt(msg.r) / 255;
                 fills[0].color.g = parseInt(msg.g) / 255;
                 fills[0].color.b = parseInt(msg.b) / 255;
-                if (fills[0].color.r > 0 && fills[0].color.g > 0 && fills[0].color.b > 0) {
+                if (fills[0].color.r > 0 && fills[0].color.g > 0 && fills[0].color.b > 0 &&
+                    fills[0].color.r < 1 && fills[0].color.g < 1 && fills[0].color.b < 1) {
                     node.backgrounds = fills;
                 }
                 else {
@@ -332,7 +350,7 @@ figma.ui.onmessage = msg => {
                 }
             }
             else {
-                figma.notify('❌ Make sure your element has a fill or background first so it is updateable. ❌');
+                figma.notify('❌ Make sure your element has a fill or background first before applying a swatch. ❌');
             }
         }
     }

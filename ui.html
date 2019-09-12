@@ -1,152 +1,143 @@
 <style>
 body {
-    font-family: sans-serif;
-    font-size: .65em;
-    padding: 8px;
-    box-sizing: border-box;
+  font-family: sans-serif;
+  font-size: 10px;
+  padding: 8px;
+  box-sizing: border-box;
 }
 
 .grid-wrapper {
-    display: grid;
-    grid-template-columns:50% 50%;
-    grid-column-gap: 10px;
-    width: 100%;
+  display: grid;
+  grid-template-columns:50% 50%;
+  grid-column-gap: 10px;
+  width: 100%;
 }
-
+#base {
+  width: 100%;
+  display: block;
+  margin: 5px 0;
+}
 /* Controls */
 .controls {
-    padding:0 10px 10px 0;
-    background: #FFF;
-    border-bottom: 1px solid #E5E5E5;
-    align-items: flex-end;
-    width: calc(100% - 10px);
+  padding:0 0 10px;
+  display: flex;
+  justify-content: space-between;
+  background: #FFF;
+  border-bottom: 1px solid #E5E5E5;
+  align-items: flex-end;
 }
 
 .label,
 label {
-    font-weight: 600;
-    margin: 0 0 5px;
-    display: block;
-    letter-spacing: .01em;
+  font-weight: 600;
+  margin: 0 0 5px;
+  display: block;
+  letter-spacing: .01em;
 }
 button {
-    border-radius: 3px;
-    border: none;
-    background: none;
-    appearance: none;
-    display: block;
-    margin: 1px;
-    padding: 3px 10px
+  border-radius: 3px;
+  border: none;
+  background: none;
+  appearance: none;
+  display: block;
+  margin: 1px;
+  padding: 3px 10px
 }
 
 .swatch {
-    padding: 0;
-    width: 100%;
-    height: 15px;
-    display: block;
-    overflow: hidden;
-    border: 2px solid transparent;
+  padding: 0;
+  width: 100%;
+  height: 15px;
+  display: block;
+  overflow: hidden;
+  border: 2px solid transparent;
 }
 
 #update-color,
 #customSteps {
-    margin-left: auto;
-    border: 1px solid #E5E5E5;
-    border-radius: 2px;
+  border: 1px solid #E5E5E5;
+  border-radius: 2px;
 }
 
 #update-color:hover,
 #customSteps:hover {
-    /* background: #E5E5E5; */
-    outline: 1px solid #E5E5E5;
+  outline: 1px solid #E5E5E5;
 }
 
 #update-color:focus,
 #customSteps:focus,
 .swatch:focus {
-    outline: none;
-    border: 2px solid #0094FE;
-    border-radius: 2px;
+  outline: none;
+  border: 2px solid #0094FE;
+  border-radius: 2px;
 }
 
-/* Colour palettes */
-#colours {
-    display: none;
-    padding: 10px 0;
-}
-.shades {
-  padding-right: 10px;
-}
+/* color palettes */
 .palette {
-  display: flex;
-  margin-bottom: 6px;
   border-bottom: 1px solid #E5E5E5;
-  padding: 0 0 5px;
+  padding:7px 0;
 }
-.palettes {
+
+#palettes {
   padding: 0 10px;
+}
+.colors {
+  display: flex;
+}
+.colors > * {
+  flex: 1;
 }
 </style>
 
-<div class="grid-wrapper controls">
+
+<div class="controls">
   <div class="col">
     <div class="steps">
-        <label for="customSteps">Steps</div>
+        <label for="customSteps">Steps</label>
         <input type="number" name="quantity" min="3" max="30" id="customSteps" value="7">
     </div>
+  </div>
   <div class="col">
-    <button id="update-color">Update Color</button>
+    <button id="update-color">Update</button>
   </div>
 </div>
 
-<div id="colours">
+<!-- <div id="base"></div> -->
+
+<div id="colors">
   <div class="grid-wrapper">
-    <div class="col shades">
-        <div id="tints-shades" class="palette">
-          <div class="grid-wrapper">
-            <div class="col">
-                <div class="label">Tints</div>
-                <div id="tints"></div>
-            </div>
-            <div class="col">
-                <div class="label">Shades</div>
-                <div id="shades"></div>
-            </div>
+    <div class="col">
+        <div id="tints-shades" class="grid-wrapper">
+          <div class="col">
+              <div id="tints"></div>
+          </div>
+          <div class="col">
+              <div id="shades"></div>
           </div>
         </div>
-        <div id="tones" class="palette">
-          <div class="grid-wrapper">
-            <div class="col">
-                <div class="label">Saturate</div>
-                <div id="saturated"></div>
-            </div>
-            <div class="col">
-                <div class="label">Desaturate</div>
-                <div id="desaturated"></div>
-            </div>
+        <div id="tones" class="grid-wrapper">
+          <div class="col">
+              <div id="saturated"></div>
+          </div>
+          <div class="col">
+              <div id="desaturated"></div>
           </div>
         </div>
     </div>
-    <div class="col palettes">
-        <div class="label">Random</div>
-        <div id="random" class="palette"></div>
-        <div class="label">Complementary</div>
-        <div id="complementary" class="palette"></div>
-        <div class="label">Split Complementary</div>
-        <div id="split-complementary" class="palette"></div>
-        <div class="label">Triadic</div>
-        <div id="triadic" class="palette"></div>
-        <div class="label">Analagous</div>
-        <div id="analagous" class="palette"></div>
-        <div class="label">Tetradic</div>
-        <div id="tetradic" class="palette"></div>
-    </div>
+    <div id="palettes" class="col"></div>
   </div>
 </div>
 
 
 
 <script>
+// https://stackoverflow.com/questions/21147832/convert-camel-case-to-human-readable-string
+function camelCaseToWords(str) {
+    return str.match(/^[a-z]+|[A-Z][a-z]*/g).map(function(x){
+        return x[0].toUpperCase() + x.substr(1).toLowerCase();
+    }).join(' ');
+};
+
 parent.postMessage({ pluginMessage: {
   type: 'hello'
 } }, '*');
@@ -163,122 +154,58 @@ function updateColor() {
       } }, '*');
 
     onmessage = (event) => {
-      const r = event.data.pluginMessage.rgb.r,
-            g = event.data.pluginMessage.rgb.g,
-            b = event.data.pluginMessage.rgb.b,
-
-            //wrappers
-            currentColor = document.getElementById('current'),
-            coloursWrapper = document.getElementById('colours'),
-            tintsWrapper = document.getElementById('tints'),
-            shadesWrapper = document.getElementById('shades'),
-            saturatedWrapper = document.getElementById('saturated'),
-            desaturatedWrapper = document.getElementById('desaturated'),
-            complementaryWrapper = document.getElementById('complementary'),
-            splitComplementaryWrapper = document.getElementById('split-complementary'),
-            triadicWrapper = document.getElementById('triadic'),
-            analagousWrapper = document.getElementById('analagous'),
-            tetradicWrapper = document.getElementById('tetradic'),
-            randomWrapper = document.getElementById('random'),
-
-            //colour data
-            tints = event.data.pluginMessage.shades.tints,
-            shades = event.data.pluginMessage.shades.shades;
-            saturated = event.data.pluginMessage.shades.saturated;
-            desaturated = event.data.pluginMessage.shades.desaturated;
-            complementary = event.data.pluginMessage.complementary,
-            splitComplementary = event.data.pluginMessage.splitComplementary,
-            triadic = event.data.pluginMessage.triadic,
-            analagous = event.data.pluginMessage.analagous,
-            tetradic = event.data.pluginMessage.tetradic,
-            random = event.data.pluginMessage.random;
-
-            console.log(event.data.pluginMessage);
-      let totalTints = '';
-      tints.forEach(function(tint) {
-        const rgb = tint.r+','+tint.g+','+tint.b;
-        totalTints +=  '<button class="tint swatch" style="background-color:rgb('+rgb+')" data-r="'+tint.r+ '" data-g="'+tint.g+ '" data-b="'+tint.b+ '"></button>';
-        return totalTints;
-      });
-
-      let totalShades = '';
-      shades.forEach(function(shade) {
-        const rgb = shade.r+','+shade.g+','+shade.b;
-        totalShades +=  '<button class="tint swatch" style="background-color:rgb('+rgb+')" data-r="'+shade.r+ '" data-g="'+shade.g+ '" data-b="'+shade.b+ '"></button>';
-        return totalShades;
-      });
-
-      let totalSaturated = '';
-      saturated.forEach(function(saturated) {
-        const rgb = saturated.r+','+saturated.g+','+saturated.b;
-        totalSaturated +=  '<button class="tint swatch" style="background-color:rgb('+rgb+')" data-r="'+saturated.r+ '" data-g="'+saturated.g+ '" data-b="'+saturated.b+ '"></button>';
-        return totalSaturated;
-      });
-
-      let totalDesaturated = '';
-      desaturated.forEach(function(desaturated) {
-        const rgb = desaturated.r+','+desaturated.g+','+desaturated.b;
-        totalDesaturated +=  '<button class="tint swatch" style="background-color:rgb('+rgb+')" data-r="'+desaturated.r+ '" data-g="'+desaturated.g+ '" data-b="'+desaturated.b+ '"></button>';
-        return totalSaturated;
-      });
-
-      let totalComps = '';
-      complementary.forEach(function(comp) {
-        const rgb = comp.r+','+comp.g+','+comp.b;
-        totalComps +=  '<button class="swatch" style="background-color:rgb('+rgb+')" data-r="'+comp.r+ '" data-g="'+comp.g+ '" data-b="'+comp.b+ '"></button>';
-        return totalComps;
-      });
-
-      let splitComps = '';
-      splitComplementary.forEach(function(comp) {
-        const rgb = comp.r+','+comp.g+','+comp.b;
-        splitComps +=  '<button class="swatch" style="background-color:rgb('+rgb+')" data-r="'+comp.r+ '" data-g="'+comp.g+ '" data-b="'+comp.b+ '"></button>';
-        return splitComps;
-      });
-
-      let triadicComps = '';
-      triadic.forEach(function(comp) {
-        const rgb = comp.r+','+comp.g+','+comp.b;
-        triadicComps +=  '<button class="swatch" style="background-color:rgb('+rgb+')" data-r="'+comp.r+ '" data-g="'+comp.g+ '" data-b="'+comp.b+ '"></button>';
-        return triadicComps;
-      });
-
-      let analagousComps = '';
-      analagous.forEach(function(comp) {
-        const rgb = comp.r+','+comp.g+','+comp.b;
-        analagousComps +=  '<button class="swatch" style="background-color:rgb('+rgb+')" data-r="'+comp.r+ '" data-g="'+comp.g+ '" data-b="'+comp.b+ '"></button>';
-        return analagousComps;
-      });
-
-      let tetradicComps = '';
-      tetradic.forEach(function(comp) {
-        const rgb = comp.r+','+comp.g+','+comp.b;
-        tetradicComps +=  '<button class="swatch" style="background-color:rgb('+rgb+')" data-r="'+comp.r+ '" data-g="'+comp.g+ '" data-b="'+comp.b+ '"></button>';
-        return tetradicComps;
-      });
-
-      let randomComps = '';
-      random.forEach(function(comp) {
-        const rgb = comp.r+','+comp.g+','+comp.b;
-        randomComps +=  '<button class="swatch" style="background-color:rgb('+rgb+')" data-r="'+comp.r+ '" data-g="'+comp.g+ '" data-b="'+comp.b+ '"></button>';
-        return randomComps;
-      });
+      const r = Math.ceil(event.data.pluginMessage.rgb.r * 255),
+            g = Math.ceil(event.data.pluginMessage.rgb.g * 255),
+            b = Math.ceil(event.data.pluginMessage.rgb.b * 255),
+            basecolor = r + ',' + g + ',' + b,
+            baseContainer = document.getElementById('base'),
+            palettesContainer = document.getElementById('palettes'),
+            //color data
+            paletteData = event.data.pluginMessage.palettes,
+            palettes = Object.entries(paletteData);
 
       //Update the UI then add additional click events to the swatches
       let updateUI = new Promise((resolve, reject) => {
-          shadesWrapper.innerHTML = totalShades;
-          tintsWrapper.innerHTML = totalTints;
-          saturatedWrapper.innerHTML = totalSaturated;
-          desaturatedWrapper.innerHTML = totalDesaturated;
-          complementaryWrapper.innerHTML = totalComps;
-          splitComplementaryWrapper.innerHTML = splitComps;
-          triadicWrapper.innerHTML = triadicComps;
-          analagousWrapper.innerHTML = analagousComps;
-          tetradicWrapper.innerHTML = tetradicComps;
-          randomWrapper.innerHTML = randomComps;
-          coloursWrapper.setAttribute("style", "display:block;");
 
-        resolve("✨ Colours successfully updated  ✨");
+        //before we do anything let's clear the palette
+        palettesContainer.innerHTML = '';
+        // baseContainer.innerHTML = '<button class="swatch" style="background-color:rgb('+basecolor+')" data-r="'+r+ '" data-g="'+g+ '" data-b="'+b+ '"></button>';
+
+        //loop through the object, build the new palatte
+        palettes.forEach(function(palette) {
+          let name = palette[0],
+              readableName = camelCaseToWords(name),
+              colors = palette[1],
+              totalShades = '';
+
+          //gather the swatches
+          colors.forEach(function(color) {
+            let rgb = color.r+','+color.g+','+color.b;
+            totalShades +=  '<button class="swatch" style="background-color:rgb('+rgb+')" data-r="'+color.r+ '" data-g="'+color.g+ '" data-b="'+color.b+ '"></button>';
+          });
+
+          //update prebuilt elements or make new ones
+          switch (name) {
+            case 'tints':
+            case 'shades':
+            case 'saturated':
+            case 'desaturated':
+              const shadesContainer = document.getElementById(name);
+              shadesContainer.innerHTML = '<div class="palette"><div class="label">' + readableName + '</div>' + totalShades + '</div>';
+            break;
+
+            default:
+              //create a new palette
+              let paletteContainer = document.createElement("div");
+              paletteContainer.setAttribute('id', name);
+              paletteContainer.setAttribute('class', 'palette');
+
+              paletteContainer.innerHTML = '<div class="label">' + readableName + '</div><div class="colors">' + totalShades + '</div>';
+              palettesContainer.appendChild(paletteContainer);
+          }
+
+        });
+        resolve("✨ colors successfully updated  ✨");
       });
 
       updateUI.then((successMessage) => {
@@ -302,7 +229,7 @@ function updateColor() {
 //init
 updateColor();
 
-//update the colour
+//update the color
 document.getElementById('update-color').addEventListener("click", function(){
   updateColor();
 });
