@@ -1,5 +1,8 @@
 
-figma.showUI(__html__, { width: 270, height: 380 });
+figma.showUI(__html__, {
+  width: 280,
+  height: 390
+});
 
 //utilities
 // https://stackoverflow.com/questions/36721830/convert-hsl-to-rgb-and-hex/54014428#54014428
@@ -445,35 +448,43 @@ function randomPalette(r, g, b) {
 figma.ui.onmessage = msg => {
   //showa message on init
   if (msg.type === 'hello') {
-    figma.notify("🦄 Select an element with a fill then click on 'Update Color' 💫")
+    figma.notify("🦄 Select an element with a fill or background then click on 'Update' 💫")
   }
 
   //refresh the data to update the color palettes
   if (msg.type === 'update-color') {
-    for (const node of figma.currentPage.selection) {
-      //check for a fill
-      if (node['fills']!== undefined && node['fills'].length !== 0) {
-        var color = node['fills'][0]['color'],
-            r = color['r'],
-            g = color['g'],
-            b = color['b'],
-            steps = msg.customSteps;
-      //check for a bacgkground fill
-      } else if (node['backgrounds'] !== undefined && node['fills'] === undefined) {
-        var color = node['backgrounds'][0]['color'],
-            r = color['r'],
-            g = color['g'],
-            b = color['b'],
-            steps = msg.customSteps;
-      // set a default value
-      } else  {
-        var color = {r: 0.7, g: 0.7, b: 0.7},
-            r = 0.7,
-            g = 0.7,
-            b = 0.7,
-            steps = msg.customSteps;
+    if (figma.currentPage.selection.length) {
+      for (const node of figma.currentPage.selection) {
+        //check for a fill
+        if (node['fills']!== undefined && node['fills'].length !== 0 ) {
+          var color = node['fills'][0]['color'],
+              r = color['r'],
+              g = color['g'],
+              b = color['b'],
+              steps = msg.customSteps;
+        //check for a bacgkground fill
+        } else if (node['backgrounds'] !== undefined && node['backgrounds'].length !== 0 && node['fills'] === undefined) {
+          var color = node['backgrounds'][0]['color'],
+              r = color['r'],
+              g = color['g'],
+              b = color['b'],
+              steps = msg.customSteps;
+        // set a default value
+        } else {
+          var color = {r: 0.7, g: 0.7, b: 0.7},
+          r = 0.8,
+          g = 0.8,
+          b = 0.8,
+          steps = msg.customSteps;
+        }
       }
-
+    } else {
+      var color = {r: 0.7, g: 0.7, b: 0.7},
+          r = 0.8,
+          g = 0.8,
+          b = 0.8,
+          steps = msg.customSteps;
+    }
       var colorObject = {
         palettes: {
           random: randomPalette(r, g, b),
@@ -499,46 +510,71 @@ figma.ui.onmessage = msg => {
       } else {
         figma.ui.postMessage(colorObject);
       }
+}
 
-    }
-  }
-
-  //change a selection's fill if a swatch is clicked
-  if (msg.type === 'change-color') {
-    for (const node of figma.currentPage.selection) {
-      //if selection has a fill
-      if (node['fills']!== undefined && node['fills'].length !== 0 && "fills" in node) {
-        const fills = clone(node.fills);
-              fills[0].color.r = parseInt(msg.r) / 255;
-              fills[0].color.g = parseInt(msg.g) / 255;
-              fills[0].color.b = parseInt(msg.b) / 255;
-        if ( fills[0].color.r > 0 && fills[0].color.g > 0 && fills[0].color.b > 0 &&
-          fills[0].color.r < 1 && fills[0].color.g < 1 && fills[0].color.b < 1) {
-          node.fills = fills;
-        } else {
-          fills[0].color.r = 0;
-          fills[0].color.g = 0;
-          fills[0].color.b = 0;
-        }
-      //if selection has a fill or background
-      } else if (node['backgrounds'] !== undefined && node['fills'] === undefined && "backgrounds" in node){
-        const fills = clone(node.backgrounds);
-              fills[0].color.r = parseInt(msg.r) / 255;
-              fills[0].color.g = parseInt(msg.g) / 255;
-              fills[0].color.b = parseInt(msg.b) / 255;
-
-        if ( fills[0].color.r > 0 && fills[0].color.g > 0 && fills[0].color.b > 0 &&
-          fills[0].color.r < 1 && fills[0].color.g < 1 && fills[0].color.b < 1) {
-          node.backgrounds = fills;
-        } else {
-          fills[0].color.r = 0;
-          fills[0].color.g = 0;
-          fills[0].color.b = 0;
-        }
-      } else  {
-        figma.notify('❌ Make sure your element has a fill or background first before applying a swatch. ❌');
+//change a selection's fill if a swatch is clicked
+if (msg.type === 'change-color') {
+  for (const node of figma.currentPage.selection) {
+    //if selection has a fill
+    if (node['fills']!== undefined && node['fills'].length !== 0 && "fills" in node) {
+      const fills = clone(node.fills);
+            fills[0].color.r = parseInt(msg.r) / 255;
+            fills[0].color.g = parseInt(msg.g) / 255;
+            fills[0].color.b = parseInt(msg.b) / 255;
+      if ( fills[0].color.r > 0 && fills[0].color.g > 0 && fills[0].color.b > 0 &&
+        fills[0].color.r < 1 && fills[0].color.g < 1 && fills[0].color.b < 1) {
+        node.fills = fills;
+      } else {
+        fills[0].color.r = 0;
+        fills[0].color.g = 0;
+        fills[0].color.b = 0;
       }
+    //if selection has a fill or background
+    } else if (node['backgrounds'] !== undefined && node['fills'] === undefined && "backgrounds" in node){
+      const fills = clone(node.backgrounds);
+            fills[0].color.r = parseInt(msg.r) / 255;
+            fills[0].color.g = parseInt(msg.g) / 255;
+            fills[0].color.b = parseInt(msg.b) / 255;
+
+      if ( fills[0].color.r > 0 && fills[0].color.g > 0 && fills[0].color.b > 0 &&
+        fills[0].color.r < 1 && fills[0].color.g < 1 && fills[0].color.b < 1) {
+        node.backgrounds = fills;
+      } else {
+        fills[0].color.r = 0;
+        fills[0].color.g = 0;
+        fills[0].color.b = 0;
+      }
+    } else  {
+      figma.notify('❌ Make sure your element has a fill or background first before applying a swatch. ❌');
     }
   }
 }
 
+//add a palette to the viewport on demand
+if (msg.type === 'add-palette') {
+  let swatches = [],
+      viewport = figma.viewport.center,
+      x = viewport.x,
+      y = viewport.y,
+      node =  figma.currentPage;
+  msg.swatches.forEach(function(color, index) {
+    var r = color[0] / 255,
+        g = color[1] / 255,
+        b = color[2] / 255,
+        swatch = figma.createRectangle();
+
+        swatch.fills = [{ type: 'SOLID', color: {r: r, g: g, b: b} }];
+        swatch.x = swatch.width * index;
+        swatch.y = y;
+        swatches.push(swatch);
+  });
+
+  // let group = figma.group(swatches, node);
+
+  // node.appendChild(swatches);
+  // node.children[0].x = x;
+  // node.children[0].y = y;
+  figma.currentPage.selection = swatches;
+  figma.viewport.scrollAndZoomIntoView(swatches);
+  }
+}

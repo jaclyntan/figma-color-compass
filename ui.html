@@ -12,27 +12,29 @@ body {
   grid-column-gap: 10px;
   width: 100%;
 }
-#base {
-  width: 100%;
-  display: block;
-  margin: 5px 0;
-}
+
 /* Controls */
 .controls {
-  padding:0 0 10px;
+  padding:0 0 8px;
+  margin-bottom: 8px;
   display: flex;
   justify-content: space-between;
+  align-items: flex-start;
   background: #FFF;
   border-bottom: 1px solid #E5E5E5;
   align-items: flex-end;
 }
-
+.minor-controls {
+  position: relative;
+  padding-bottom: 3px;
+}
 .label,
 label {
   font-weight: 600;
   margin: 0 0 5px;
-  display: block;
+  display: inline-block;
   letter-spacing: .01em;
+  margin-right: 18px;
 }
 button {
   border-radius: 3px;
@@ -41,7 +43,7 @@ button {
   appearance: none;
   display: block;
   margin: 1px;
-  padding: 3px 10px
+  padding: 2px 10px;
 }
 
 .swatch {
@@ -55,7 +57,7 @@ button {
 
 #update-color,
 #customSteps {
-  border: 1px solid #E5E5E5;
+  border: 2px solid transparent;
   border-radius: 2px;
 }
 
@@ -74,8 +76,8 @@ button {
 
 /* color palettes */
 .palette {
-  border-bottom: 1px solid #E5E5E5;
-  padding:7px 0;
+  /* border-bottom: 1px solid #E5E5E5; */
+  padding:6px 0;
 }
 
 #palettes {
@@ -83,9 +85,35 @@ button {
 }
 .colors {
   display: flex;
+  align-items: flex-start;
 }
 .colors > * {
   flex: 1;
+}
+button.add {
+  padding: 0;
+  margin: 0;
+  border: 1px solid #E5E5E5;
+  color: rgb(159, 159, 159);
+  height: 15px;
+  width: 15px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 0;
+  border-radius: 50%;
+  font-weight: bold;
+  margin-right: -5px;
+  margin: 0;
+  position: absolute;
+  top: -2px;
+  right: 0;
+}
+button.add:hover,
+button.add:focus {
+  border: 2px solid #0094FE;
+  color: rgb(52, 52, 52);
+  outline: none;
 }
 </style>
 
@@ -104,7 +132,7 @@ button {
 
 <!-- <div id="base"></div> -->
 
-<div id="colors">
+<div id="color-harmonies">
   <div class="grid-wrapper">
     <div class="col">
         <div id="tints-shades" class="grid-wrapper">
@@ -157,8 +185,8 @@ function updateColor() {
       const r = Math.ceil(event.data.pluginMessage.rgb.r * 255),
             g = Math.ceil(event.data.pluginMessage.rgb.g * 255),
             b = Math.ceil(event.data.pluginMessage.rgb.b * 255),
-            basecolor = r + ',' + g + ',' + b,
-            baseContainer = document.getElementById('base'),
+            // basecolor = r + ',' + g + ',' + b,
+            // baseContainer = document.getElementById('base'),
             palettesContainer = document.getElementById('palettes'),
             //color data
             paletteData = event.data.pluginMessage.palettes,
@@ -200,17 +228,20 @@ function updateColor() {
               paletteContainer.setAttribute('id', name);
               paletteContainer.setAttribute('class', 'palette');
 
-              paletteContainer.innerHTML = '<div class="label">' + readableName + '</div><div class="colors">' + totalShades + '</div>';
+              paletteContainer.innerHTML = '<div class="minor-controls"><div class="label">' + readableName + '</div><button class="add" data-target="'+name+'">+</button></div><div class="colors">' + totalShades + '</div>';
               palettesContainer.appendChild(paletteContainer);
           }
 
         });
-        resolve("✨ colors successfully updated  ✨");
+        resolve("✨ Colors successfully updated  ✨");
       });
 
       updateUI.then((successMessage) => {
         console.log(successMessage);
-        const swatches = document.getElementsByClassName('swatch');
+        const swatches = document.getElementsByClassName('swatch'),
+              addButtons = document.getElementsByClassName('add');
+
+        //send info about the swatch we just clicked
         for(var i=0;i<swatches.length;i++){
           swatches[i].addEventListener("click", function(){
             parent.postMessage({ pluginMessage: {
@@ -221,6 +252,28 @@ function updateColor() {
             } }, '*');
           });
         }
+
+        //send info about the add button we just clicked
+        for(var i=0;i<addButtons.length;i++){
+          addButtons[i].addEventListener("click", function(){
+            let palette = this.dataset.target,
+                paletteContainer = document.querySelectorAll('#'+palette + ' .swatch'),
+                colors = [];
+                paletteContainer.forEach(function(color) {
+                  var r = color.dataset.r,
+                      g = color.dataset.g,
+                      b = color.dataset.b;
+                  colors.push([r,g,b]);
+                });
+            parent.postMessage({ pluginMessage: {
+              type: 'add-palette',
+              swatches: colors
+            } }, '*');
+          });
+        }
+      });
+      updateUI.catch(function(error) {
+        console.error(error);
       });
     }
   }
