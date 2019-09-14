@@ -126,13 +126,13 @@ button.add:focus {
     </div>
   </div>
   <div class="col">
-    <button id="update-color">Update</button>
+    <button id="update-color">Refresh</button>
   </div>
 </div>
 
 <!-- <div id="base"></div> -->
 
-<div id="color-harmonies">
+<div id="color-compass">
   <div class="grid-wrapper">
     <div class="col">
         <div id="tints-shades" class="grid-wrapper">
@@ -169,6 +169,7 @@ function camelCaseToWords(str) {
 parent.postMessage({ pluginMessage: {
   type: 'hello'
 } }, '*');
+
 function updateColor() {
     parent.postMessage({ pluginMessage: {
       type: 'update-color',
@@ -182,6 +183,7 @@ function updateColor() {
       } }, '*');
 
     onmessage = (event) => {
+      // console.log(event.data.pluginMessage);
       const r = Math.ceil(event.data.pluginMessage.rgb.r * 255),
             g = Math.ceil(event.data.pluginMessage.rgb.g * 255),
             b = Math.ceil(event.data.pluginMessage.rgb.b * 255),
@@ -211,7 +213,6 @@ function updateColor() {
             let rgb = color.r+','+color.g+','+color.b;
             totalShades +=  '<button class="swatch" style="background-color:rgb('+rgb+')" data-r="'+color.r+ '" data-g="'+color.g+ '" data-b="'+color.b+ '"></button>';
           });
-
           //update prebuilt elements or make new ones
           switch (name) {
             case 'tints':

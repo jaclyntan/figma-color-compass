@@ -272,50 +272,78 @@ function randomPalette(r, g, b) {
 figma.ui.onmessage = msg => {
     //showa message on init
     if (msg.type === 'hello') {
-        figma.notify("🦄 Select an element with a fill or background then click on 'Update' 💫");
+        figma.notify("🦄 Select an element with a fill or background then click on 'Refresh' to update the palette. 💫");
     }
     //refresh the data to update the color palettes
     if (msg.type === 'update-color') {
+        var defaultColor = { r: 0.7, g: 0.7, b: 0.7 };
         if (figma.currentPage.selection.length) {
             for (const node of figma.currentPage.selection) {
                 //check for a fill
                 if (node['fills'] !== undefined && node['fills'].length !== 0) {
-                    var color = node['fills'][0]['color'], r = color['r'], g = color['g'], b = color['b'], steps = msg.customSteps;
+                    var color = node['fills'][0]['color'], colorData = {
+                        color: color,
+                        r: color['r'],
+                        g: color['g'],
+                        b: color['b'],
+                        steps: msg.customSteps
+                    };
                     //check for a bacgkground fill
                 }
                 else if (node['backgrounds'] !== undefined && node['backgrounds'].length !== 0 && node['fills'] === undefined) {
-                    var color = node['backgrounds'][0]['color'], r = color['r'], g = color['g'], b = color['b'], steps = msg.customSteps;
+                    var color = node['backgrounds'][0]['color'];
+                    colorData = {
+                        color: color,
+                        r: color['r'],
+                        g: color['g'],
+                        b: color['b'],
+                        steps: msg.customSteps
+                    };
                     // set a default value
                 }
                 else {
-                    var color = { r: 0.7, g: 0.7, b: 0.7 }, r = 0.8, g = 0.8, b = 0.8, steps = msg.customSteps;
+                    colorData = {
+                        color: defaultColor.r + ',' + defaultColor.g + ',' + defaultColor.b,
+                        r: defaultColor.r,
+                        g: defaultColor.g,
+                        b: defaultColor.b,
+                        steps: 7
+                    };
+                    figma.notify('❌ No valid fill or background was found. Default color applied ❌');
                 }
             }
         }
         else {
-            var color = { r: 0.7, g: 0.7, b: 0.7 }, r = 0.8, g = 0.8, b = 0.8, steps = msg.customSteps;
+            colorData = {
+                color: defaultColor.r + ',' + defaultColor.g + ',' + defaultColor.b,
+                r: defaultColor.r,
+                g: defaultColor.g,
+                b: defaultColor.b,
+                steps: 7
+            };
+            // figma.notify('❌ No valid fill or background was found. Default color applied ❌')
         }
         var colorObject = {
             palettes: {
-                random: randomPalette(r, g, b),
-                tints: tintsNshades(r, g, b, steps),
-                shades: tintsNshades(r, g, b, -steps),
-                saturated: tones(r, g, b, steps),
-                desaturated: tones(r, g, b, -steps),
-                complementary: complementaryPalette(r, g, b),
-                splitComplementary: splitComplementaryPalette(r, g, b),
-                triadic: triadicPalette(r, g, b),
-                analagous: analagousPalette(r, g, b),
-                tetradic: tetradicPalette(r, g, b)
+                random: randomPalette(colorData.r, colorData.g, colorData.b),
+                tints: tintsNshades(colorData.r, colorData.g, colorData.b, colorData.steps),
+                shades: tintsNshades(colorData.r, colorData.g, colorData.b, -colorData.steps),
+                saturated: tones(colorData.r, colorData.g, colorData.b, colorData.steps),
+                desaturated: tones(colorData.r, colorData.g, colorData.b, -colorData.steps),
+                complementary: complementaryPalette(colorData.r, colorData.g, colorData.b),
+                splitComplementary: splitComplementaryPalette(colorData.r, colorData.g, colorData.b),
+                triadic: triadicPalette(colorData.r, colorData.g, colorData.b),
+                analagous: analagousPalette(colorData.r, colorData.g, colorData.b),
+                tetradic: tetradicPalette(colorData.r, colorData.g, colorData.b)
             },
             rgb: {
-                r: r,
-                g: g,
-                b: b,
+                r: colorData.r,
+                g: colorData.g,
+                b: colorData.b,
             }
         };
         //limit the steps to under 30
-        if (steps > 30) {
+        if (colorData.steps > 30) {
             figma.notify('❌Please keep steps under 30 ❌');
         }
         else {
@@ -342,7 +370,8 @@ figma.ui.onmessage = msg => {
                 }
                 //if selection has a fill or background
             }
-            else if (node['backgrounds'] !== undefined && node['fills'] === undefined && "backgrounds" in node) {
+            else if (node['backgrounds'] !== undefined && node['fills'] === undefined && node['backgrounds'].length !== 0 && "backgrounds" in node) {
+                // console.log(node['backgrounds'].length !== 0)
                 const fills = clone(node.backgrounds);
                 fills[0].color.r = parseInt(msg.r) / 255;
                 fills[0].color.g = parseInt(msg.g) / 255;
@@ -358,7 +387,7 @@ figma.ui.onmessage = msg => {
                 }
             }
             else {
-                figma.notify('❌ Make sure your element has a fill or background first before applying a swatch. ❌');
+                figma.notify('❌ Make sure your element has a fill or background before applying a swatch (groups are not supported) ❌');
             }
         }
     }
@@ -368,7 +397,7 @@ figma.ui.onmessage = msg => {
         msg.swatches.forEach(function (color, index) {
             var r = color[0] / 255, g = color[1] / 255, b = color[2] / 255, swatch = figma.createRectangle();
             swatch.fills = [{ type: 'SOLID', color: { r: r, g: g, b: b } }];
-            swatch.x = swatch.width * index;
+            swatch.x = x + swatch.width * index;
             swatch.y = y;
             swatches.push(swatch);
         });
@@ -377,6 +406,6 @@ figma.ui.onmessage = msg => {
         // node.children[0].x = x;
         // node.children[0].y = y;
         figma.currentPage.selection = swatches;
-        figma.viewport.scrollAndZoomIntoView(swatches);
+        // figma.viewport.scrollAndZoomIntoView(swatches);
     }
 };
