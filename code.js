@@ -272,7 +272,7 @@ function randomPalette(r, g, b) {
 figma.ui.onmessage = msg => {
     //showa message on init
     if (msg.type === 'hello') {
-        figma.notify("🦄 Select an element with a fill or background then click on 'Refresh' to update the palette. 💫");
+        figma.notify("🦄 Select an element with a fill or background then click on 'Update' to update the palette. 💫");
     }
     //refresh the data to update the color palettes
     if (msg.type === 'update-color') {
@@ -309,7 +309,7 @@ figma.ui.onmessage = msg => {
                         b: defaultColor.b,
                         steps: 7
                     };
-                    figma.notify('❌ No valid fill or background was found. Default color applied ❌');
+                    figma.notify('❌ No valid fill or background was found. Color palette has been reset. ❌');
                 }
             }
         }
@@ -387,7 +387,7 @@ figma.ui.onmessage = msg => {
                 }
             }
             else {
-                figma.notify('❌ Make sure your element has a fill or background before applying a swatch (groups are not supported) ❌');
+                figma.notify('❌Make sure the element has a fill or background before applying a swatch(groups are not supported)❌');
             }
         }
     }
@@ -397,7 +397,7 @@ figma.ui.onmessage = msg => {
         msg.swatches.forEach(function (color, index) {
             var r = color[0] / 255, g = color[1] / 255, b = color[2] / 255, swatch = figma.createRectangle();
             swatch.fills = [{ type: 'SOLID', color: { r: r, g: g, b: b } }];
-            swatch.x = x + swatch.width * index;
+            swatch.x = (x - msg.swatches.length * 100 / 2) + (100 * index);
             swatch.y = y;
             swatches.push(swatch);
         });
