@@ -94,20 +94,21 @@ button.add {
   padding: 0;
   margin: 0;
   border: 1px solid #E5E5E5;
-  color: rgb(159, 159, 159);
+  color: #7b7b7b;
   height: 15px;
   width: 15px;
   display: flex;
   align-items: center;
   justify-content: center;
-  line-height: 0;
   border-radius: 50%;
   font-weight: bold;
-  margin-right: -5px;
   margin: 0;
   position: absolute;
   top: -2px;
   right: 0;
+}
+button.add .plus {
+  margin-top: -3px;
 }
 button.add:hover,
 button.add:focus {
@@ -159,6 +160,7 @@ button.add:focus {
 
 
 <script>
+//UTILITY
 // https://stackoverflow.com/questions/21147832/convert-camel-case-to-human-readable-string
 function camelCaseToWords(str) {
     return str.match(/^[a-z]+|[A-Z][a-z]*/g).map(function(x){
@@ -166,9 +168,11 @@ function camelCaseToWords(str) {
     }).join(' ');
 };
 
+//send on plugin startup
 parent.postMessage({ pluginMessage: {
   type: 'hello'
 } }, '*');
+
 
 function updateColor() {
     parent.postMessage({ pluginMessage: {
@@ -197,7 +201,7 @@ function updateColor() {
       //Update the UI then add additional click events to the swatches
       let updateUI = new Promise((resolve, reject) => {
 
-        //before we do anything let's clear the palette
+        //before we do anything, clear the palette
         palettesContainer.innerHTML = '';
         // baseContainer.innerHTML = '<button class="swatch" style="background-color:rgb('+basecolor+')" data-r="'+r+ '" data-g="'+g+ '" data-b="'+b+ '"></button>';
 
@@ -210,8 +214,8 @@ function updateColor() {
 
           //gather the swatches
           colors.forEach(function(color) {
-            let rgb = color.r+','+color.g+','+color.b;
-            totalShades +=  '<button class="swatch" style="background-color:rgb('+rgb+')" data-r="'+color.r+ '" data-g="'+color.g+ '" data-b="'+color.b+ '"></button>';
+            let rgb = `${color.r},${color.g},${color.b}`;
+            totalShades +=  `<button class="swatch" style="background-color:rgb(${rgb})" data-r="${color.r}" data-g="${color.g}" data-b="${color.b}"></button>`;
           });
           //update prebuilt elements or make new ones
           switch (name) {
@@ -220,7 +224,7 @@ function updateColor() {
             case 'saturated':
             case 'desaturated':
               const shadesContainer = document.getElementById(name);
-              shadesContainer.innerHTML = '<div class="palette"><div class="label">' + readableName + '</div>' + totalShades + '</div>';
+              shadesContainer.innerHTML = `<div class="palette"><div class="label">${readableName}</div>${totalShades}</div>`;
             break;
 
             default:
@@ -229,7 +233,7 @@ function updateColor() {
               paletteContainer.setAttribute('id', name);
               paletteContainer.setAttribute('class', 'palette');
 
-              paletteContainer.innerHTML = '<div class="minor-controls"><div class="label">' + readableName + '</div><button class="add" data-target="'+name+'">+</button></div><div class="colors">' + totalShades + '</div>';
+              paletteContainer.innerHTML = `<div class="minor-controls"><div class="label">${readableName}</div><button class="add" data-target="${name}"><span class="plus">+</span></button></div><div class="colors">${totalShades}</div>`;
               palettesContainer.appendChild(paletteContainer);
           }
 
@@ -261,7 +265,7 @@ function updateColor() {
                 paletteContainer = document.querySelectorAll('#'+palette + ' .swatch'),
                 colors = [];
                 paletteContainer.forEach(function(color) {
-                  var r = color.dataset.r,
+                  let r = color.dataset.r,
                       g = color.dataset.g,
                       b = color.dataset.b;
                   colors.push([r,g,b]);

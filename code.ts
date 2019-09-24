@@ -67,7 +67,7 @@ function tintsNshades(r, g, b, steps) {
       let diff = (hsl[2] / steps) * i,
           newLightness = hsl[2] - diff,
           newShade = hsl2rgb(hsl[0], hsl[1],newLightness);
-      var shade = {
+      let shade = {
         r: Math.ceil(newShade[0] * 255),
         g: Math.ceil(newShade[1] * 255),
         b: Math.ceil(newShade[2] * 255)
@@ -80,7 +80,7 @@ function tintsNshades(r, g, b, steps) {
       let diff = ((1 - hsl[2]) / steps) * i,
           newLightness = hsl[2] + diff,
           newShade = hsl2rgb(hsl[0], hsl[1],newLightness);
-      var shade = {
+      let shade = {
         r: Math.ceil(newShade[0] * 255),
         g: Math.ceil(newShade[1] * 255),
         b: Math.ceil(newShade[2] * 255)
@@ -102,7 +102,7 @@ function tones(r, g, b, steps) {
       let diff = (hsl[1] / steps) * i,
           newSat = hsl[1] - diff,
           newShade = hsl2rgb(hsl[0], newSat,hsl[2]);
-      var shade = {
+      let shade = {
         r: Math.ceil(newShade[0] * 255),
         g: Math.ceil(newShade[1] * 255),
         b: Math.ceil(newShade[2] * 255)
@@ -115,7 +115,7 @@ function tones(r, g, b, steps) {
       let diff = ((1 - hsl[1]) / steps) * i,
           newSat = hsl[1] + diff,
           newShade = hsl2rgb(hsl[0], newSat,hsl[2]);
-      var shade = {
+      let shade = {
         r: Math.ceil(newShade[0] * 255),
         g: Math.ceil(newShade[1] * 255),
         b: Math.ceil(newShade[2] * 255)
@@ -132,13 +132,13 @@ function complementaryPalette(r, g, b) {
       newR = 180 + hsl[0],
       newShade = hsl2rgb(newR, hsl[1], hsl[2]);
 
-  var currentShade = {
+  let currentShade = {
     r: Math.ceil(r * 255),
     g: Math.ceil(g * 255),
     b: Math.ceil(b * 255)
   }
 
-  var complementaryShade = {
+  let complementaryShade = {
     r: Math.ceil(newShade[0] * 255),
     g: Math.ceil(newShade[1] * 255),
     b: Math.ceil(newShade[2] * 255),
@@ -156,19 +156,19 @@ function splitComplementaryPalette(r, g, b) {
       newShade1 = hsl2rgb(newR1, hsl[1], hsl[2]),
       newShade2 = hsl2rgb(newR2, hsl[1], hsl[2]);
 
-  var currentShade = {
+  let currentShade = {
     r: Math.ceil(r * 255),
     g: Math.ceil(g * 255),
     b: Math.ceil(b * 255)
   }
 
-  var complementaryShade1 = {
+  let complementaryShade1 = {
     r: Math.ceil(newShade1[0] * 255),
     g: Math.ceil(newShade1[1] * 255),
     b: Math.ceil(newShade1[2] * 255),
   }
 
-  var complementaryShade2 = {
+  let complementaryShade2 = {
     r: Math.ceil(newShade2[0] * 255),
     g: Math.ceil(newShade2[1] * 255),
     b: Math.ceil(newShade2[2] * 255),
@@ -186,19 +186,19 @@ function triadicPalette(r, g, b) {
       newShade1 = hsl2rgb(newR1, hsl[1], hsl[2]),
       newShade2 = hsl2rgb(newR2, hsl[1], hsl[2]);
 
-  var currentShade = {
+  let currentShade = {
     r: Math.ceil(r * 255),
     g: Math.ceil(g * 255),
     b: Math.ceil(b * 255)
   }
 
-  var complementaryShade1 = {
+  let complementaryShade1 = {
     r: Math.ceil(newShade1[0] * 255),
     g: Math.ceil(newShade1[1] * 255),
     b: Math.ceil(newShade1[2] * 255),
   }
 
-  var complementaryShade2 = {
+  let complementaryShade2 = {
     r: Math.ceil(newShade2[0] * 255),
     g: Math.ceil(newShade2[1] * 255),
     b: Math.ceil(newShade2[2] * 255),
@@ -216,19 +216,19 @@ function analagousPalette(r, g, b) {
       newShade1 = hsl2rgb(newR1, hsl[1], hsl[2]),
       newShade2 = hsl2rgb(newR2, hsl[1], hsl[2]);
 
-  var currentShade = {
+  let currentShade = {
     r: Math.ceil(r * 255),
     g: Math.ceil(g * 255),
     b: Math.ceil(b * 255)
   }
 
-  var complementaryShade1 = {
+  let complementaryShade1 = {
     r: Math.ceil(newShade1[0] * 255),
     g: Math.ceil(newShade1[1] * 255),
     b: Math.ceil(newShade1[2] * 255),
   }
 
-  var complementaryShade2 = {
+  let complementaryShade2 = {
     r: Math.ceil(newShade2[0] * 255),
     g: Math.ceil(newShade2[1] * 255),
     b: Math.ceil(newShade2[2] * 255),
@@ -248,25 +248,25 @@ function tetradicPalette(r, g, b) {
       newShade2 = hsl2rgb(newR2, hsl[1], hsl[2]),
       newShade3 = hsl2rgb(newR3, hsl[1], hsl[2]);
 
-  var currentShade = {
+  let currentShade = {
     r: Math.ceil(r * 255),
     g: Math.ceil(g * 255),
     b: Math.ceil(b * 255)
   }
 
-  var complementaryShade1 = {
+  let complementaryShade1 = {
     r: Math.ceil(newShade1[0] * 255),
     g: Math.ceil(newShade1[1] * 255),
     b: Math.ceil(newShade1[2] * 255),
   }
 
-  var complementaryShade2 = {
+  let complementaryShade2 = {
     r: Math.ceil(newShade2[0] * 255),
     g: Math.ceil(newShade2[1] * 255),
     b: Math.ceil(newShade2[2] * 255),
   }
 
-  var complementaryShade3 = {
+  let complementaryShade3 = {
     r: Math.ceil(newShade3[0] * 255),
     g: Math.ceil(newShade3[1] * 255),
     b: Math.ceil(newShade3[2] * 255),
@@ -288,14 +288,14 @@ function randomPalette(r, g, b) {
         newR2 = getRndInteger(170,190) + hsl[0],
         newR3 = getRndInteger(160,180) + hsl[0],
         newR4 = getRndInteger(180,200) + hsl[0],
-        newSat1 = getRndInteger(hsl[1]* 100, 50)*.01,
-        newSat2 = getRndInteger(hsl[1]* 100 - 30, 50)*.01,
-        newSat3 = getRndInteger(hsl[1]* 100 - 30, 10)*.01,
-        newSat4 = getRndInteger(hsl[1]* 100 - 30, 5)*.01,
-        newLight1 = getRndInteger(hsl[2]* 100 + 10,90)*.01,
-        newLight2 = getRndInteger(hsl[2]* 100,70)*.01,
-        newLight3 = getRndInteger(hsl[2]* 100,30)*.01,
-        newLight4 = getRndInteger(hsl[2]* 100,10)*.01,
+        newSat1 = getRndInteger(hsl[1] * 100, 50) * .01,
+        newSat2 = getRndInteger(hsl[1] * 100 - 30, 50) * .01,
+        newSat3 = getRndInteger(hsl[1] * 100 - 30, 10) * .01,
+        newSat4 = getRndInteger(hsl[1] * 100 - 30, 5) * .01,
+        newLight1 = getRndInteger(hsl[2] * 100 + 10,90) * .01,
+        newLight2 = getRndInteger(hsl[2] * 100,70) * .01,
+        newLight3 = getRndInteger(hsl[2] * 100,30) * .01,
+        newLight4 = getRndInteger(hsl[2] * 100,10) * .01,
         newShade1 = hsl2rgb(newR1, newSat1, newLight1),
         newShade2 = hsl2rgb(newR2, newSat2, newLight2),
         newShade3 = hsl2rgb(newR3, newSat3, newLight3),
@@ -306,14 +306,14 @@ function randomPalette(r, g, b) {
         newR2 = getRndInteger(0,30) + hsl[0],
         newR3 = getRndInteger(0,-15) + hsl[0],
         newR4 = getRndInteger(0,-35) + hsl[0],
-        newSat1 = getRndInteger(hsl[1]* 100, 70)*.01,
-        newSat2 = getRndInteger(hsl[1]* 100, 50)*.01,
-        newSat3 = getRndInteger(hsl[1]* 100,20)*.01,
-        newSat4 = getRndInteger(hsl[1]* 100, 10)*.01,
-        newLight1 = getRndInteger(hsl[2]* 100 ,90)*.01,
-        newLight2 = getRndInteger(hsl[2]* 100 ,60)*.01,
-        newLight3 = getRndInteger(hsl[2]* 100 ,50)*.01,
-        newLight4 = getRndInteger(hsl[2]* 100 ,30)*.01,
+        newSat1 = getRndInteger(hsl[1] * 100, 70) * .01,
+        newSat2 = getRndInteger(hsl[1] * 100, 50) * .01,
+        newSat3 = getRndInteger(hsl[1] * 100,20) * .01,
+        newSat4 = getRndInteger(hsl[1] * 100, 10) * .01,
+        newLight1 = getRndInteger(hsl[2] * 100 ,90) * .01,
+        newLight2 = getRndInteger(hsl[2] * 100 ,60) * .01,
+        newLight3 = getRndInteger(hsl[2] * 100 ,50) * .01,
+        newLight4 = getRndInteger(hsl[2] * 100 ,30) * .01,
         newShade1 = hsl2rgb(newR1, newSat1, newLight1),
         newShade2 = hsl2rgb(newR2, newSat2, newLight2),
         newShade3 = hsl2rgb(newR3, newSat3, newLight3),
@@ -324,14 +324,14 @@ function randomPalette(r, g, b) {
         newR2 = getRndInteger(20,45) + hsl[0],
         newR3 = getRndInteger(170,190) + hsl[0],
         newR4 = getRndInteger(180,200) + hsl[0],
-        newSat1 = getRndInteger(hsl[1]* 100, 70)*.01,
-        newSat2 = getRndInteger(hsl[1]* 100, 50)*.01,
-        newSat3 = getRndInteger(hsl[1]* 100, 20)*.01,
-        newSat4 = getRndInteger(hsl[1]* 100,10)*.01,
-        newLight1 = getRndInteger(hsl[2]* 100,90)*.01,
-        newLight2 = getRndInteger(hsl[2]* 100,70)*.01,
-        newLight3 = getRndInteger(hsl[2]* 100,30)*.01,
-        newLight4 = getRndInteger(hsl[2]* 100,10)*.01,
+        newSat1 = getRndInteger(hsl[1] * 100, 70) * .01,
+        newSat2 = getRndInteger(hsl[1] * 100, 50) * .01,
+        newSat3 = getRndInteger(hsl[1] * 100, 20) * .01,
+        newSat4 = getRndInteger(hsl[1] * 100,10) * .01,
+        newLight1 = getRndInteger(hsl[2] * 100,90) * .01,
+        newLight2 = getRndInteger(hsl[2] * 100,70) * .01,
+        newLight3 = getRndInteger(hsl[2] * 100,30) * .01,
+        newLight4 = getRndInteger(hsl[2] * 100,10) * .01,
         newShade1 = hsl2rgb(newR1, newSat1, newLight1),
         newShade2 = hsl2rgb(newR2, newSat2, newLight2),
         newShade3 = hsl2rgb(newR3, newSat3, newLight3),
@@ -342,14 +342,14 @@ function randomPalette(r, g, b) {
         newR2 = getRndInteger(50,90) + hsl[0],
         newR3 = getRndInteger(70,100) + hsl[0],
         newR4 = getRndInteger(70,110) + hsl[0],
-        newSat1 = getRndInteger(hsl[1]* 100, 40)*.01,
-        newSat2 = getRndInteger(hsl[1]* 100, 30)*.01,
-        newSat3 = getRndInteger(hsl[1]* 100, 20)*.01,
-        newSat4 = getRndInteger(hsl[1]* 100,10)*.01,
-        newLight1 = getRndInteger(hsl[2]* 100,70)*.01,
-        newLight2 = getRndInteger(hsl[2]* 100,50)*.01,
-        newLight3 = getRndInteger(hsl[2]* 100,30)*.01,
-        newLight4 = getRndInteger(hsl[2]* 100,10)*.01,
+        newSat1 = getRndInteger(hsl[1] * 100, 40)  *.01,
+        newSat2 = getRndInteger(hsl[1] * 100, 30) * .01,
+        newSat3 = getRndInteger(hsl[1] * 100, 20) * .01,
+        newSat4 = getRndInteger(hsl[1] * 100,10) * .01,
+        newLight1 = getRndInteger(hsl[2] * 100,70) * .01,
+        newLight2 = getRndInteger(hsl[2] * 100,50) * .01,
+        newLight3 = getRndInteger(hsl[2] * 100,30) * .01,
+        newLight4 = getRndInteger(hsl[2] * 100,10) * .01,
         newShade1 = hsl2rgb(newR1, newSat1, newLight1),
         newShade2 = hsl2rgb(newR2, newSat2, newLight2),
         newShade3 = hsl2rgb(newR3, newSat3, newLight3),
@@ -360,14 +360,14 @@ function randomPalette(r, g, b) {
         newR2 = getRndInteger(-80,-100) + hsl[0],
         newR3 = getRndInteger(-90,-120) + hsl[0],
         newR4 = getRndInteger(-100,-120) + hsl[0],
-        newSat1 = getRndInteger(hsl[1]* 100, 80)*.01,
-        newSat2 = getRndInteger(hsl[1]* 100, 60)*.01,
-        newSat3 = getRndInteger(hsl[1]* 100, 40)*.01,
-        newSat4 = getRndInteger(hsl[1]* 100,30)*.01,
-        newLight1 = getRndInteger(hsl[2]* 100,90)*.01,
-        newLight2 = getRndInteger(hsl[2]* 100,80)*.01,
-        newLight3 = getRndInteger(hsl[2]* 100,50)*.01,
-        newLight4 = getRndInteger(hsl[2]* 100,10)*.01,
+        newSat1 = getRndInteger(hsl[1] * 100, 80) * .01,
+        newSat2 = getRndInteger(hsl[1] * 100, 60) * .01,
+        newSat3 = getRndInteger(hsl[1] * 100, 40) * .01,
+        newSat4 = getRndInteger(hsl[1] * 100,30) * .01,
+        newLight1 = getRndInteger(hsl[2] * 100,90) * .01,
+        newLight2 = getRndInteger(hsl[2] * 100,80) * .01,
+        newLight3 = getRndInteger(hsl[2] * 100,50) * .01,
+        newLight4 = getRndInteger(hsl[2] * 100,10) * .01,
         newShade1 = hsl2rgb(newR1, newSat1, newLight1),
         newShade2 = hsl2rgb(newR2, newSat2, newLight2),
         newShade3 = hsl2rgb(newR3, newSat3, newLight3),
@@ -378,14 +378,14 @@ function randomPalette(r, g, b) {
         newR2 = getRndInteger(80,100) + hsl[0],
         newR3 = getRndInteger(90,120) + hsl[0],
         newR4 = getRndInteger(100,120) + hsl[0],
-        newSat1 = getRndInteger(hsl[1]* 100, 80)*.01,
-        newSat2 = getRndInteger(hsl[1]* 100, 60)*.01,
-        newSat3 = getRndInteger(hsl[1]* 100, 40)*.01,
-        newSat4 = getRndInteger(hsl[1]* 100,30)*.01,
-        newLight1 = getRndInteger(hsl[2]* 100,90)*.01,
-        newLight2 = getRndInteger(hsl[2]* 100,50)*.01,
-        newLight3 = getRndInteger(hsl[2]* 100,30)*.01,
-        newLight4 = getRndInteger(hsl[2]* 100,10)*.01,
+        newSat1 = getRndInteger(hsl[1] * 100, 80) * .01,
+        newSat2 = getRndInteger(hsl[1] * 100, 60) * .01,
+        newSat3 = getRndInteger(hsl[1] * 100, 40) * .01,
+        newSat4 = getRndInteger(hsl[1] * 100,30) * .01,
+        newLight1 = getRndInteger(hsl[2] * 100,90) * .01,
+        newLight2 = getRndInteger(hsl[2] * 100,50) * .01,
+        newLight3 = getRndInteger(hsl[2] * 100,30) * .01,
+        newLight4 = getRndInteger(hsl[2] * 100,10) * .01,
         newShade1 = hsl2rgb(newR1, newSat1, newLight1),
         newShade2 = hsl2rgb(newR2, newSat2, newLight2),
         newShade3 = hsl2rgb(newR3, newSat3, newLight3),
@@ -396,45 +396,45 @@ function randomPalette(r, g, b) {
         newR2 = getRndInteger(240,250) + hsl[0],
         newR3 = getRndInteger(240,250) + hsl[0],
         newR4 = getRndInteger(230,260) + hsl[0],
-        newSat1 = getRndInteger(hsl[1]* 100, 90)*.01,
-        newSat2 = getRndInteger(hsl[1]* 100, 90)*.01,
-        newSat3 = getRndInteger(hsl[1]* 100, 60)*.01,
-        newSat4 = getRndInteger(hsl[1]* 100,10)*.01,
-        newLight1 = getRndInteger(hsl[2] * 100+10,90)*.01,
-        newLight2 = getRndInteger(hsl[2]* 100 + 10,90)*.01,
-        newLight3 = getRndInteger(hsl[2]* 100,70)*.01,
-        newLight4 = getRndInteger(hsl[2] * 100 - 10,10)*.01,
+        newSat1 = getRndInteger(hsl[1] * 100, 90) * .01,
+        newSat2 = getRndInteger(hsl[1] * 100, 90) * .01,
+        newSat3 = getRndInteger(hsl[1] * 100, 60) * .01,
+        newSat4 = getRndInteger(hsl[1] * 100,10) * .01,
+        newLight1 = getRndInteger(hsl[2] * 100 + 10,90) *.01,
+        newLight2 = getRndInteger(hsl[2] * 100 + 10,90) * .01,
+        newLight3 = getRndInteger(hsl[2] * 100,70) * .01,
+        newLight4 = getRndInteger(hsl[2] * 100 - 10,10)  *.01,
         newShade1 = hsl2rgb(newR1, newSat1, newLight1),
         newShade2 = hsl2rgb(newR2, newSat2, newLight2),
         newShade3 = hsl2rgb(newR3, newSat3, newLight3),
         newShade4 = hsl2rgb(newR4, newSat4, newLight4);
   }
 
-  var currentShade = {
+  let currentShade = {
     r: Math.ceil(r * 255),
     g: Math.ceil(g * 255),
     b: Math.ceil(b * 255)
   }
 
-  var complementaryShade1 = {
+  let complementaryShade1 = {
     r: Math.ceil(newShade1[0] * 255),
     g: Math.ceil(newShade1[1] * 255),
     b: Math.ceil(newShade1[2] * 255),
   }
 
-  var complementaryShade2 = {
+  let complementaryShade2 = {
     r: Math.ceil(newShade2[0] * 255),
     g: Math.ceil(newShade2[1] * 255),
     b: Math.ceil(newShade2[2] * 255),
   }
 
-  var complementaryShade3 = {
+  let complementaryShade3 = {
     r: Math.ceil(newShade3[0] * 255),
     g: Math.ceil(newShade3[1] * 255),
     b: Math.ceil(newShade3[2] * 255),
   }
 
-  var complementaryShade4 = {
+  let complementaryShade4 = {
     r: Math.ceil(newShade4[0] * 255),
     g: Math.ceil(newShade4[1] * 255),
     b: Math.ceil(newShade4[2] * 255),
@@ -449,16 +449,16 @@ function randomPalette(r, g, b) {
 
 //UI functionality
 figma.ui.onmessage = msg => {
+
   //showa message on init
   if (msg.type === 'hello') {
-    figma.notify("🦄 Select an element with a fill or background then click on 'Update' to update the palette. 💫")
+    figma.notify("🦄 Select an element containing a solid fill or background then click on 'Update' 💫")
   }
-
 
   //refresh the data to update the color palettes
   if (msg.type === 'update-color') {
 
-    var defaultColor = {r: 0.7, g: 0.7, b: 0.7};
+    let defaultColor = {r: 0.7, g: 0.7, b: 0.7};
 
     interface colorData {
       color: string,
@@ -469,10 +469,28 @@ figma.ui.onmessage = msg => {
     }
 
     if (figma.currentPage.selection.length) {
+
       for (const node of figma.currentPage.selection) {
-        //check for a fill
-        if (node['fills']!== undefined && node['fills'].length !== 0 ) {
-          var color = node['fills'][0]['color'],
+
+        //first check for a solid fill/bg then store the data
+        let checkFills = {};
+        if (node['fills']!== undefined) {
+          node['fills'].forEach(x => {
+            if ( x['type'] === 'SOLID') {
+              checkFills = {type: 'FILL', color: x['color']}
+            }
+          });
+        }else if (node['backgrounds'] !== undefined) {
+          node['backgrounds'].forEach(x => {
+            if ( x['type'] === 'SOLID') {
+              checkFills = {type: 'BACKGROUND', color: x['color']}
+            }
+          });
+        }
+
+        //checkin it twice
+        if (checkFills['type'] === 'FILL') {
+          var color = checkFills['color'],
           colorData = {
             color: color,
             r:color['r'],
@@ -480,8 +498,7 @@ figma.ui.onmessage = msg => {
             b:color['b'],
             steps: msg.customSteps
           }
-        //check for a bacgkground fill
-        } else if (node['backgrounds'] !== undefined && node['backgrounds'].length !== 0 && node['fills'] === undefined) {
+        } else if (checkFills['type'] === 'BACKGROUND') {
           var color = node['backgrounds'][0]['color'];
           colorData = {
             color: color,
@@ -493,18 +510,18 @@ figma.ui.onmessage = msg => {
         // set a default value
         } else {
           colorData = {
-            color: defaultColor.r + ','+defaultColor.g+','+defaultColor.b,
+            color: `${defaultColor.r}, ${defaultColor.g}, ${defaultColor.b}`,
             r:defaultColor.r,
             g:defaultColor.g,
             b:defaultColor.b,
             steps: 7
           }
-          figma.notify('❌ No valid fill or background was found. Color palette has been reset. ❌')
+          figma.notify('❌ This plugin only works with elements containing solid fills/backgrounds. ❌')
         }
       }
     } else {
       colorData = {
-        color: defaultColor.r + ','+defaultColor.g+','+defaultColor.b,
+        color: `${defaultColor.r}, ${defaultColor.g}, ${defaultColor.b}`,
         r:defaultColor.r,
         g:defaultColor.g,
         b:defaultColor.b,
@@ -514,7 +531,7 @@ figma.ui.onmessage = msg => {
 
     }
 
-  var colorObject = {
+  let colorObject = {
     palettes: {
       random: randomPalette(colorData.r, colorData.g, colorData.b),
       tints: tintsNshades(colorData.r, colorData.g, colorData.b, colorData.steps),
@@ -544,58 +561,90 @@ figma.ui.onmessage = msg => {
 
 //change a selection's fill if a swatch is clicked
 if (msg.type === 'change-color') {
+
   for (const node of figma.currentPage.selection) {
-    //if selection has a fill
-    if (node['fills']!== undefined && node['fills'].length !== 0 && "fills" in node) {
-      const fills = clone(node.fills);
-            fills[0].color.r = parseInt(msg.r) / 255;
-            fills[0].color.g = parseInt(msg.g) / 255;
-            fills[0].color.b = parseInt(msg.b) / 255;
-      if ( fills[0].color.r > 0 && fills[0].color.g > 0 && fills[0].color.b > 0 &&
-        fills[0].color.r < 1 && fills[0].color.g < 1 && fills[0].color.b < 1) {
+
+     //like before, we first check for a solid fill/bg then store it in an object
+     let checkFills = {};
+
+     if (node['fills']!== undefined) {
+       node['fills'].forEach(function(x,index) {
+         if ( x['type'] === 'SOLID') {
+           checkFills = {type: 'FILL', color: x['color'], index: index}
+         }
+       });
+     } else if (node['backgrounds'] !== undefined) {
+       node['backgrounds'].forEach(function(x,index) {
+         if ( x['type'] === 'SOLID') {
+           checkFills = {type: 'BACKGROUND', color: x['color'], index: index}
+         }
+       });
+     }
+
+    //go round again and do the conditional
+    if (checkFills['type']==='FILL' && "fills" in node) {
+      let i = checkFills['index'],
+          fills = clone(node.fills);
+          fills[i].color.r = parseInt(msg.r) / 255;
+          fills[i].color.g = parseInt(msg.g) / 255;
+          fills[i].color.b = parseInt(msg.b) / 255;
+      //this checks takes care of any edge cases that are "too white/black"
+      if (
+        fills[i].color.r > 0 &&
+        fills[i].color.g > 0 &&
+        fills[i].color.b > 0 &&
+        fills[i].color.r < 1 &&
+        fills[i].color.g < 1 &&
+        fills[i].color.b < 1 ) {
         node.fills = fills;
       } else {
-        fills[0].color.r = 0;
-        fills[0].color.g = 0;
-        fills[0].color.b = 0;
+        fills[i].color.r = 0;
+        fills[i].color.g = 0;
+        fills[i].color.b = 0;
       }
-    //if selection has a fill or background
-    } else if (node['backgrounds'] !== undefined && node['fills'] === undefined && node['backgrounds'].length !== 0 && "backgrounds" in node){
-      // console.log(node['backgrounds'].length !== 0)
+    } else if (checkFills['type']==='BACKGROUND' && "backgrounds" in node){
+      let i = checkFills['index'],
+        fills = clone(node.backgrounds);
+        fills[i].color.r = parseInt(msg.r) / 255;
+        fills[i].color.g = parseInt(msg.g) / 255;
+        fills[i].color.b = parseInt(msg.b) / 255;
 
-      const fills = clone(node.backgrounds);
-            fills[0].color.r = parseInt(msg.r) / 255;
-            fills[0].color.g = parseInt(msg.g) / 255;
-            fills[0].color.b = parseInt(msg.b) / 255;
-
-      if ( fills[0].color.r > 0 && fills[0].color.g > 0 && fills[0].color.b > 0 &&
-        fills[0].color.r < 1 && fills[0].color.g < 1 && fills[0].color.b < 1) {
+      if (
+        fills[i].color.r > 0 &&
+        fills[i].color.g > 0 &&
+        fills[i].color.b > 0 &&
+        fills[i].color.r < 1 &&
+        fills[i].color.g < 1 &&
+        fills[i].color.b < 1 ) {
         node.backgrounds = fills;
       } else {
-        fills[0].color.r = 0;
-        fills[0].color.g = 0;
-        fills[0].color.b = 0;
+        fills[i].color.r = 0;
+        fills[i].color.g = 0;
+        fills[i].color.b = 0;
       }
     } else {
-      figma.notify('❌Make sure the element has a fill or background before applying a swatch(groups are not supported)❌');
+      figma.notify('❌Make sure the element contains a solid fill or background before applying a swatch ❌');
     }
   }
 }
 
 //add a palette to the viewport on demand
 if (msg.type === 'add-palette') {
+
   let swatches = [],
       viewport = figma.viewport.center,
       x = viewport.x,
       y = viewport.y,
       node =  figma.currentPage;
+
   msg.swatches.forEach(function(color, index) {
-    var r = color[0] / 255,
+    let r = color[0] / 255,
         g = color[1] / 255,
         b = color[2] / 255,
+
         swatch = figma.createRectangle();
         swatch.fills = [{ type: 'SOLID', color: {r: r, g: g, b: b} }];
-        swatch.x = (x - msg.swatches.length*100/2) + (100 * index);
+        swatch.x = (x - msg.swatches.length * 100/2) + (100 * index);
         swatch.y = y;
         swatches.push(swatch);
   });
