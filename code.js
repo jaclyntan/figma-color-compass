@@ -306,7 +306,7 @@ figma.ui.onmessage = msg => {
                     };
                 }
                 else if (checkFills['type'] === 'BACKGROUND') {
-                    var color = node['backgrounds'][0]['color'];
+                    var color = checkFills['color'];
                     colorData = {
                         color: color,
                         r: color['r'],
@@ -322,7 +322,7 @@ figma.ui.onmessage = msg => {
                         r: defaultColor.r,
                         g: defaultColor.g,
                         b: defaultColor.b,
-                        steps: 7
+                        steps: 8
                     };
                     figma.notify('❌ This plugin only works with elements containing solid fills/backgrounds. ❌');
                 }
@@ -334,7 +334,7 @@ figma.ui.onmessage = msg => {
                 r: defaultColor.r,
                 g: defaultColor.g,
                 b: defaultColor.b,
-                steps: 7
+                steps: 8
             };
             // figma.notify('❌ No valid fill or background was found. Default color applied ❌')
         }
@@ -390,39 +390,14 @@ figma.ui.onmessage = msg => {
                 fills[i].color.r = parseInt(msg.r) / 255;
                 fills[i].color.g = parseInt(msg.g) / 255;
                 fills[i].color.b = parseInt(msg.b) / 255;
-                //this checks takes care of any edge cases that are "too white/black"
-                if (fills[i].color.r > 0 &&
-                    fills[i].color.g > 0 &&
-                    fills[i].color.b > 0 &&
-                    fills[i].color.r < 1 &&
-                    fills[i].color.g < 1 &&
-                    fills[i].color.b < 1) {
-                    node.fills = fills;
-                }
-                else {
-                    fills[i].color.r = 0;
-                    fills[i].color.g = 0;
-                    fills[i].color.b = 0;
-                }
+                node.fills = fills;
             }
             else if (checkFills['type'] === 'BACKGROUND' && "backgrounds" in node) {
                 let i = checkFills['index'], fills = clone(node.backgrounds);
                 fills[i].color.r = parseInt(msg.r) / 255;
                 fills[i].color.g = parseInt(msg.g) / 255;
                 fills[i].color.b = parseInt(msg.b) / 255;
-                if (fills[i].color.r > 0 &&
-                    fills[i].color.g > 0 &&
-                    fills[i].color.b > 0 &&
-                    fills[i].color.r < 1 &&
-                    fills[i].color.g < 1 &&
-                    fills[i].color.b < 1) {
-                    node.backgrounds = fills;
-                }
-                else {
-                    fills[i].color.r = 0;
-                    fills[i].color.g = 0;
-                    fills[i].color.b = 0;
-                }
+                node.backgrounds = fills;
             }
             else {
                 figma.notify('❌Make sure the element contains a solid fill or background before applying a swatch ❌');
