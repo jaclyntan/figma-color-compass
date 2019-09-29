@@ -1,6 +1,6 @@
 figma.showUI(__html__, {
     width: 280,
-    height: 390
+    height: 405
 });
 //utilities
 // https://stackoverflow.com/questions/36721830/convert-hsl-to-rgb-and-hex/54014428#54014428
@@ -53,6 +53,21 @@ Palette Functions
 ♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥
 ♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡
 */
+//calculation with help from:
+// https://stackoverflow.com/questions/22868182/uicolor-transition-based-on-progress-value
+function blendPalette(prevR, prevG, prevB, r, g, b, steps) {
+    let i = 0, shades = [];
+    for (i = 1; i < steps; i++) {
+        let factor = i / steps, newR = (1 - factor) * r + factor * prevR, newG = (1 - factor) * g + factor * prevG, newB = (1 - factor) * b + factor * prevB;
+        let shade = {
+            r: Math.round(newR * 255),
+            g: Math.round(newG * 255),
+            b: Math.round(newB * 255),
+        };
+        shades.push(shade);
+    }
+    return shades;
+}
 function tintsNshades(r, g, b, steps) {
     let i = 0, shades = [], hsl = rgb2hsl(r, g, b);
     if (steps < 0) {
@@ -60,9 +75,9 @@ function tintsNshades(r, g, b, steps) {
         for (i = 0; i > steps; i--) {
             let diff = (hsl[2] / steps) * i, newLightness = hsl[2] - diff, newShade = hsl2rgb(hsl[0], hsl[1], newLightness);
             let shade = {
-                r: Math.ceil(newShade[0] * 255),
-                g: Math.ceil(newShade[1] * 255),
-                b: Math.ceil(newShade[2] * 255)
+                r: Math.round(newShade[0] * 255),
+                g: Math.round(newShade[1] * 255),
+                b: Math.round(newShade[2] * 255)
             };
             shades.push(shade);
         }
@@ -72,9 +87,9 @@ function tintsNshades(r, g, b, steps) {
         for (i = 0; i < steps; i++) {
             let diff = ((1 - hsl[2]) / steps) * i, newLightness = hsl[2] + diff, newShade = hsl2rgb(hsl[0], hsl[1], newLightness);
             let shade = {
-                r: Math.ceil(newShade[0] * 255),
-                g: Math.ceil(newShade[1] * 255),
-                b: Math.ceil(newShade[2] * 255)
+                r: Math.round(newShade[0] * 255),
+                g: Math.round(newShade[1] * 255),
+                b: Math.round(newShade[2] * 255)
             };
             shades.push(shade);
         }
@@ -88,9 +103,9 @@ function tones(r, g, b, steps) {
         for (i = 0; i > steps; i--) {
             let diff = (hsl[1] / steps) * i, newSat = hsl[1] - diff, newShade = hsl2rgb(hsl[0], newSat, hsl[2]);
             let shade = {
-                r: Math.ceil(newShade[0] * 255),
-                g: Math.ceil(newShade[1] * 255),
-                b: Math.ceil(newShade[2] * 255)
+                r: Math.round(newShade[0] * 255),
+                g: Math.round(newShade[1] * 255),
+                b: Math.round(newShade[2] * 255)
             };
             shades.push(shade);
         }
@@ -100,9 +115,9 @@ function tones(r, g, b, steps) {
         for (i = 0; i < steps; i++) {
             let diff = ((1 - hsl[1]) / steps) * i, newSat = hsl[1] + diff, newShade = hsl2rgb(hsl[0], newSat, hsl[2]);
             let shade = {
-                r: Math.ceil(newShade[0] * 255),
-                g: Math.ceil(newShade[1] * 255),
-                b: Math.ceil(newShade[2] * 255)
+                r: Math.round(newShade[0] * 255),
+                g: Math.round(newShade[1] * 255),
+                b: Math.round(newShade[2] * 255)
             };
             shades.push(shade);
         }
@@ -112,14 +127,14 @@ function tones(r, g, b, steps) {
 function complementaryPalette(r, g, b) {
     let shades = [], hsl = rgb2hsl(r, g, b), newR = 180 + hsl[0], newShade = hsl2rgb(newR, hsl[1], hsl[2]);
     let currentShade = {
-        r: Math.ceil(r * 255),
-        g: Math.ceil(g * 255),
-        b: Math.ceil(b * 255)
+        r: Math.round(r * 255),
+        g: Math.round(g * 255),
+        b: Math.round(b * 255)
     };
     let complementaryShade = {
-        r: Math.ceil(newShade[0] * 255),
-        g: Math.ceil(newShade[1] * 255),
-        b: Math.ceil(newShade[2] * 255),
+        r: Math.round(newShade[0] * 255),
+        g: Math.round(newShade[1] * 255),
+        b: Math.round(newShade[2] * 255),
     };
     shades.push(currentShade, complementaryShade);
     return shades;
@@ -127,19 +142,19 @@ function complementaryPalette(r, g, b) {
 function splitComplementaryPalette(r, g, b) {
     let shades = [], hsl = rgb2hsl(r, g, b), newR1 = (180 + 15) + hsl[0], newR2 = (180 - 15) + hsl[0], newShade1 = hsl2rgb(newR1, hsl[1], hsl[2]), newShade2 = hsl2rgb(newR2, hsl[1], hsl[2]);
     let currentShade = {
-        r: Math.ceil(r * 255),
-        g: Math.ceil(g * 255),
-        b: Math.ceil(b * 255)
+        r: Math.round(r * 255),
+        g: Math.round(g * 255),
+        b: Math.round(b * 255)
     };
     let complementaryShade1 = {
-        r: Math.ceil(newShade1[0] * 255),
-        g: Math.ceil(newShade1[1] * 255),
-        b: Math.ceil(newShade1[2] * 255),
+        r: Math.round(newShade1[0] * 255),
+        g: Math.round(newShade1[1] * 255),
+        b: Math.round(newShade1[2] * 255),
     };
     let complementaryShade2 = {
-        r: Math.ceil(newShade2[0] * 255),
-        g: Math.ceil(newShade2[1] * 255),
-        b: Math.ceil(newShade2[2] * 255),
+        r: Math.round(newShade2[0] * 255),
+        g: Math.round(newShade2[1] * 255),
+        b: Math.round(newShade2[2] * 255),
     };
     shades.push(currentShade, complementaryShade1, complementaryShade2);
     return shades;
@@ -147,19 +162,19 @@ function splitComplementaryPalette(r, g, b) {
 function triadicPalette(r, g, b) {
     let shades = [], hsl = rgb2hsl(r, g, b), newR1 = (180 + 45) + hsl[0], newR2 = (180 - 45) + hsl[0], newShade1 = hsl2rgb(newR1, hsl[1], hsl[2]), newShade2 = hsl2rgb(newR2, hsl[1], hsl[2]);
     let currentShade = {
-        r: Math.ceil(r * 255),
-        g: Math.ceil(g * 255),
-        b: Math.ceil(b * 255)
+        r: Math.round(r * 255),
+        g: Math.round(g * 255),
+        b: Math.round(b * 255)
     };
     let complementaryShade1 = {
-        r: Math.ceil(newShade1[0] * 255),
-        g: Math.ceil(newShade1[1] * 255),
-        b: Math.ceil(newShade1[2] * 255),
+        r: Math.round(newShade1[0] * 255),
+        g: Math.round(newShade1[1] * 255),
+        b: Math.round(newShade1[2] * 255),
     };
     let complementaryShade2 = {
-        r: Math.ceil(newShade2[0] * 255),
-        g: Math.ceil(newShade2[1] * 255),
-        b: Math.ceil(newShade2[2] * 255),
+        r: Math.round(newShade2[0] * 255),
+        g: Math.round(newShade2[1] * 255),
+        b: Math.round(newShade2[2] * 255),
     };
     shades.push(currentShade, complementaryShade1, complementaryShade2);
     return shades;
@@ -167,19 +182,19 @@ function triadicPalette(r, g, b) {
 function analagousPalette(r, g, b) {
     let shades = [], hsl = rgb2hsl(r, g, b), newR1 = 30 + hsl[0], newR2 = hsl[0] - 30, newShade1 = hsl2rgb(newR1, hsl[1], hsl[2]), newShade2 = hsl2rgb(newR2, hsl[1], hsl[2]);
     let currentShade = {
-        r: Math.ceil(r * 255),
-        g: Math.ceil(g * 255),
-        b: Math.ceil(b * 255)
+        r: Math.round(r * 255),
+        g: Math.round(g * 255),
+        b: Math.round(b * 255)
     };
     let complementaryShade1 = {
-        r: Math.ceil(newShade1[0] * 255),
-        g: Math.ceil(newShade1[1] * 255),
-        b: Math.ceil(newShade1[2] * 255),
+        r: Math.round(newShade1[0] * 255),
+        g: Math.round(newShade1[1] * 255),
+        b: Math.round(newShade1[2] * 255),
     };
     let complementaryShade2 = {
-        r: Math.ceil(newShade2[0] * 255),
-        g: Math.ceil(newShade2[1] * 255),
-        b: Math.ceil(newShade2[2] * 255),
+        r: Math.round(newShade2[0] * 255),
+        g: Math.round(newShade2[1] * 255),
+        b: Math.round(newShade2[2] * 255),
     };
     shades.push(currentShade, complementaryShade1, complementaryShade2);
     return shades;
@@ -187,24 +202,24 @@ function analagousPalette(r, g, b) {
 function tetradicPalette(r, g, b) {
     let shades = [], hsl = rgb2hsl(r, g, b), newR1 = 90 + hsl[0], newR2 = 180 + hsl[0], newR3 = 270 + hsl[0], newShade1 = hsl2rgb(newR1, hsl[1], hsl[2]), newShade2 = hsl2rgb(newR2, hsl[1], hsl[2]), newShade3 = hsl2rgb(newR3, hsl[1], hsl[2]);
     let currentShade = {
-        r: Math.ceil(r * 255),
-        g: Math.ceil(g * 255),
-        b: Math.ceil(b * 255)
+        r: Math.round(r * 255),
+        g: Math.round(g * 255),
+        b: Math.round(b * 255)
     };
     let complementaryShade1 = {
-        r: Math.ceil(newShade1[0] * 255),
-        g: Math.ceil(newShade1[1] * 255),
-        b: Math.ceil(newShade1[2] * 255),
+        r: Math.round(newShade1[0] * 255),
+        g: Math.round(newShade1[1] * 255),
+        b: Math.round(newShade1[2] * 255),
     };
     let complementaryShade2 = {
-        r: Math.ceil(newShade2[0] * 255),
-        g: Math.ceil(newShade2[1] * 255),
-        b: Math.ceil(newShade2[2] * 255),
+        r: Math.round(newShade2[0] * 255),
+        g: Math.round(newShade2[1] * 255),
+        b: Math.round(newShade2[2] * 255),
     };
     let complementaryShade3 = {
-        r: Math.ceil(newShade3[0] * 255),
-        g: Math.ceil(newShade3[1] * 255),
-        b: Math.ceil(newShade3[2] * 255),
+        r: Math.round(newShade3[0] * 255),
+        g: Math.round(newShade3[1] * 255),
+        b: Math.round(newShade3[2] * 255),
     };
     shades.push(currentShade, complementaryShade1, complementaryShade2, complementaryShade3);
     return shades;
@@ -241,29 +256,29 @@ function randomPalette(r, g, b) {
         var newR1 = getRndInteger(0, 10) + hsl[0], newR2 = getRndInteger(240, 250) + hsl[0], newR3 = getRndInteger(240, 250) + hsl[0], newR4 = getRndInteger(230, 260) + hsl[0], newSat1 = getRndInteger(hsl[1] * 100, 90) * .01, newSat2 = getRndInteger(hsl[1] * 100, 90) * .01, newSat3 = getRndInteger(hsl[1] * 100, 60) * .01, newSat4 = getRndInteger(hsl[1] * 100, 10) * .01, newLight1 = getRndInteger(hsl[2] * 100 + 10, 90) * .01, newLight2 = getRndInteger(hsl[2] * 100 + 10, 90) * .01, newLight3 = getRndInteger(hsl[2] * 100, 70) * .01, newLight4 = getRndInteger(hsl[2] * 100 - 10, 10) * .01, newShade1 = hsl2rgb(newR1, newSat1, newLight1), newShade2 = hsl2rgb(newR2, newSat2, newLight2), newShade3 = hsl2rgb(newR3, newSat3, newLight3), newShade4 = hsl2rgb(newR4, newSat4, newLight4);
     }
     let currentShade = {
-        r: Math.ceil(r * 255),
-        g: Math.ceil(g * 255),
-        b: Math.ceil(b * 255)
+        r: Math.round(r * 255),
+        g: Math.round(g * 255),
+        b: Math.round(b * 255)
     };
     let complementaryShade1 = {
-        r: Math.ceil(newShade1[0] * 255),
-        g: Math.ceil(newShade1[1] * 255),
-        b: Math.ceil(newShade1[2] * 255),
+        r: Math.round(newShade1[0] * 255),
+        g: Math.round(newShade1[1] * 255),
+        b: Math.round(newShade1[2] * 255),
     };
     let complementaryShade2 = {
-        r: Math.ceil(newShade2[0] * 255),
-        g: Math.ceil(newShade2[1] * 255),
-        b: Math.ceil(newShade2[2] * 255),
+        r: Math.round(newShade2[0] * 255),
+        g: Math.round(newShade2[1] * 255),
+        b: Math.round(newShade2[2] * 255),
     };
     let complementaryShade3 = {
-        r: Math.ceil(newShade3[0] * 255),
-        g: Math.ceil(newShade3[1] * 255),
-        b: Math.ceil(newShade3[2] * 255),
+        r: Math.round(newShade3[0] * 255),
+        g: Math.round(newShade3[1] * 255),
+        b: Math.round(newShade3[2] * 255),
     };
     let complementaryShade4 = {
-        r: Math.ceil(newShade4[0] * 255),
-        g: Math.ceil(newShade4[1] * 255),
-        b: Math.ceil(newShade4[2] * 255),
+        r: Math.round(newShade4[0] * 255),
+        g: Math.round(newShade4[1] * 255),
+        b: Math.round(newShade4[2] * 255),
     };
     shades.push(currentShade, complementaryShade1, complementaryShade2, complementaryShade3, complementaryShade4);
     return shades;
@@ -278,6 +293,7 @@ figma.ui.onmessage = msg => {
     if (msg.type === 'update-color') {
         let defaultColor = { r: 0.7, g: 0.7, b: 0.7 };
         if (figma.currentPage.selection.length) {
+            // console.log(msg);
             for (const node of figma.currentPage.selection) {
                 //first check for a solid fill/bg then store the data
                 let checkFills = {};
@@ -330,16 +346,18 @@ figma.ui.onmessage = msg => {
         }
         else {
             colorData = {
-                color: `${defaultColor.r}, ${defaultColor.g}, ${defaultColor.b}`,
-                r: defaultColor.r,
-                g: defaultColor.g,
-                b: defaultColor.b,
-                steps: 8
+                color: `${msg.prevR}, ${msg.prevG}, ${msg.prevB}`,
+                r: msg.prevR,
+                g: msg.prevG,
+                b: msg.prevB,
+                steps: msg.customSteps
             };
             // figma.notify('❌ No valid fill or background was found. Default color applied ❌')
         }
+        // console.log(  blendPalette(msg.prevR,msg.prevG,msg.prevB,colorData.r, colorData.g, colorData.b, colorData.steps) )
         let colorObject = {
             palettes: {
+                blend: blendPalette(msg.prevR, msg.prevG, msg.prevB, colorData.r, colorData.g, colorData.b, colorData.steps),
                 random: randomPalette(colorData.r, colorData.g, colorData.b),
                 tints: tintsNshades(colorData.r, colorData.g, colorData.b, colorData.steps),
                 shades: tintsNshades(colorData.r, colorData.g, colorData.b, -colorData.steps),
@@ -355,7 +373,13 @@ figma.ui.onmessage = msg => {
                 r: colorData.r,
                 g: colorData.g,
                 b: colorData.b,
-            }
+            },
+            prevRgb: {
+                r: msg.prevR,
+                g: msg.prevG,
+                b: msg.prevB,
+            },
+            prevSteps: msg.prevSteps
         };
         //limit the steps to under 30
         if (colorData.steps > 30) {

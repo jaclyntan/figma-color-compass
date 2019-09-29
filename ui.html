@@ -2,7 +2,7 @@
 body {
   font-family: sans-serif;
   font-size: 10px;
-  padding: 8px;
+  padding: 35px 2px 0;
   box-sizing: border-box;
 }
 
@@ -15,14 +15,19 @@ body {
 
 /* Controls */
 .controls {
-  padding:0 0 8px;
-  margin-bottom: 8px;
+  padding:5px 10px;
+  margin-bottom: 7px;
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
   background: #FFF;
   border-bottom: 1px solid #E5E5E5;
   align-items: flex-end;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: calc(100% - 20px);
+  z-index: 100;
 }
 .minor-controls {
   position: relative;
@@ -79,7 +84,9 @@ button {
   /* border-bottom: 1px solid #E5E5E5; */
   padding:6px 0;
 }
-
+#blended {
+  margin-bottom: 5px;
+}
 #palettes {
   padding: 0 10px;
 }
@@ -123,7 +130,7 @@ button.add:focus {
   <div class="col">
     <div class="steps">
         <label for="customSteps">Steps</label>
-        <input type="number" name="quantity" min="3" max="30" id="customSteps" value="8">
+        <input type="number" name="quantity" min="3" max="30" id="customSteps" value="8" data-previous="7">
     </div>
   </div>
   <div class="col">
@@ -134,7 +141,14 @@ button.add:focus {
 <!-- <div id="base"></div> -->
 
 <div id="color-compass">
-  <div class="grid-wrapper">
+  <div id="blend">
+    <div class="label">Blend with previous color</div>
+    <div id="blended" class="colors">
+        <button id="new-color" class="swatch" style="background-color:rgb(200, 200, 200)" data-r="200" data-g="200" data-b="200"></button>
+    </div>
+  </div>
+
+  <div id="main" class="grid-wrapper">
     <div class="col">
         <div id="tints-shades" class="grid-wrapper">
           <div class="col">
@@ -177,33 +191,47 @@ parent.postMessage({ pluginMessage: {
 function updateColor() {
     parent.postMessage({ pluginMessage: {
       type: 'update-color',
-      customSteps: document.getElementById('customSteps').value
+      customSteps: document.getElementById('customSteps').value,
+      prevSteps: document.getElementById('customSteps').dataset.previous,
+      prevR: document.getElementById('new-color').dataset.r / 255,
+      prevG:  document.getElementById('new-color').dataset.g / 255,
+      prevB: document.getElementById('new-color').dataset.b / 255,
     } }, '*');
 
     onmessage = (event) => {
       parent.postMessage({ pluginMessage: {
         type: 'update-color',
-        customSteps: document.getElementById('customSteps').value
+        customSteps: document.getElementById('customSteps').value,
+        prevSteps: document.getElementById('customSteps').dataset.previous,
+        prevR: document.getElementById('new-color').dataset.r / 255,
+        prevG:  document.getElementById('new-color').dataset.g / 255,
+        prevB: document.getElementById('new-color').dataset.b / 255,
       } }, '*');
-
     onmessage = (event) => {
-      // console.log(event.data.pluginMessage);
-      const r = Math.ceil(event.data.pluginMessage.rgb.r * 255),
-            g = Math.ceil(event.data.pluginMessage.rgb.g * 255),
-            b = Math.ceil(event.data.pluginMessage.rgb.b * 255),
-            // basecolor = r + ',' + g + ',' + b,
-            // baseContainer = document.getElementById('base'),
-            palettesContainer = document.getElementById('palettes'),
-            //color data
-            paletteData = event.data.pluginMessage.palettes,
-            palettes = Object.entries(paletteData);
+      let r = Math.round(event.data.pluginMessage.rgb.r * 255),
+          g = Math.round(event.data.pluginMessage.rgb.g * 255),
+          b = Math.round(event.data.pluginMessage.rgb.b * 255),
+
+          prevR = Math.round(event.data.pluginMessage.prevRgb.r * 255),
+          prevG = Math.round(event.data.pluginMessage.prevRgb.g * 255),
+          prevB = Math.round(event.data.pluginMessage.prevRgb.b * 255),
+
+          prevSteps = document.getElementById('customSteps').dataset.prevValue,
+          palettesContainer = document.getElementById('palettes'),
+          //color data
+          paletteData = event.data.pluginMessage.palettes,
+          palettes = Object.entries(paletteData);
+
 
       //Update the UI then add additional click events to the swatches
       let updateUI = new Promise((resolve, reject) => {
 
         //before we do anything, clear the palette
         palettesContainer.innerHTML = '';
-        // baseContainer.innerHTML = '<button class="swatch" style="background-color:rgb('+basecolor+')" data-r="'+r+ '" data-g="'+g+ '" data-b="'+b+ '"></button>';
+
+        //update the previous step value
+        let steps = document.getElementById('customSteps').value;
+        document.getElementById('customSteps').setAttribute('data-previous',steps);
 
         //loop through the object, build the new palatte
         palettes.forEach(function(palette) {
@@ -211,7 +239,6 @@ function updateColor() {
               readableName = camelCaseToWords(name),
               colors = palette[1],
               totalShades = '';
-
           //gather the swatches
           colors.forEach(function(color) {
             let rgb = `${color.r},${color.g},${color.b}`;
@@ -225,6 +252,15 @@ function updateColor() {
             case 'desaturated':
               const shadesContainer = document.getElementById(name);
               shadesContainer.innerHTML = `<div class="palette"><div class="label">${readableName}</div>${totalShades}</div>`;
+            break;
+
+            case 'blend':
+            let blendContainer = document.getElementById('blended');
+            blendContainer.innerHTML = `
+            <button id="new-color" class="swatch" style="background-color:rgb(${r},${g},${b})" data-r="${r}" data-g="${g}" data-b="${b}"></button>
+            ${totalShades}
+            <button id="prev-color" class="swatch" style="background-color:rgb(${prevR},${prevG},${prevB})" data-r="${prevR}" data-g="${prevG}" data-b="${prevB}"></button>
+            `
             break;
 
             default:
