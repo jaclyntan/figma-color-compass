@@ -495,7 +495,7 @@ figma.ui.onmessage = msg => {
       for (const node of figma.currentPage.selection) {
         //first check for a solid fill/bg then store the data
         let checkFills = {};
-        if (node['fills']!== undefined) {
+        if (node['fills'].length >= 1 ) {
           node['fills'].forEach(x => {
             if ( x['type'] === 'SOLID') {
               checkFills = {type: 'FILL', color: x['color']}
@@ -507,10 +507,16 @@ figma.ui.onmessage = msg => {
               checkFills = {type: 'BACKGROUND', color: x['color']}
             }
           });
+        } else if (node['strokes'].length >= 1) {
+          node['strokes'].forEach(x => {
+            if ( x['type'] === 'SOLID') {
+              checkFills = {type: 'STROKE', color: x['color']}
+            }
+          });
         }
 
         //checkin it twice
-        if (checkFills['type'] === 'FILL') {
+        if (checkFills !== undefined) {
           var color = checkFills['color'],
           colorData = {
             color: color,
@@ -519,16 +525,6 @@ figma.ui.onmessage = msg => {
             b:color['b'],
             steps: msg.customSteps
           }
-        } else if (checkFills['type'] === 'BACKGROUND') {
-          var color = checkFills['color'];
-          colorData = {
-            color: color,
-            r:color['r'],
-            g:color['g'],
-            b:color['b'],
-            steps: msg.customSteps
-          }
-        // set a default value
         } else {
           colorData = {
             color: `${defaultColor.r}, ${defaultColor.g}, ${defaultColor.b}`,
@@ -579,8 +575,8 @@ figma.ui.onmessage = msg => {
     prevSteps: msg.prevSteps
   }
   //limit the steps to under 30
-  if (colorData.steps > 30) {
-    figma.notify('❌Please keep steps under 30 ❌')
+  if (colorData.steps > 50) {
+    figma.notify('❌Please keep steps under 50 ❌')
   } else {
     figma.ui.postMessage(colorObject);
   }
@@ -594,7 +590,7 @@ if (msg.type === 'change-color') {
      //like before, we first check for a solid fill/bg then store it in an object
      let checkFills = {};
 
-     if (node['fills']!== undefined) {
+     if (node['fills'].length >= 1) {
        node['fills'].forEach(function(x,index) {
          if ( x['type'] === 'SOLID') {
            checkFills = {type: 'FILL', color: x['color'], index: index}
@@ -606,7 +602,13 @@ if (msg.type === 'change-color') {
            checkFills = {type: 'BACKGROUND', color: x['color'], index: index}
          }
        });
-     }
+     } else if (node['strokes'].length >= 1) {
+      node['strokes'].forEach(function(x,index) {
+        if ( x['type'] === 'SOLID') {
+          checkFills = {type: 'STROKE', color: x['color'], index: index}
+        }
+      });
+    }
 
     //go round again and do the conditional
     if (checkFills['type']==='FILL' && "fills" in node) {
@@ -623,6 +625,13 @@ if (msg.type === 'change-color') {
         fills[i].color.g = parseInt(msg.g) / 255;
         fills[i].color.b = parseInt(msg.b) / 255;
       node.backgrounds = fills;
+    } else if (checkFills['type']==='STROKE' && "strokes" in node){
+      let i = checkFills['index'],
+        fills = clone(node.strokes);
+        fills[i].color.r = parseInt(msg.r) / 255;
+        fills[i].color.g = parseInt(msg.g) / 255;
+        fills[i].color.b = parseInt(msg.b) / 255;
+      node.strokes = fills;
     } else {
       figma.notify('❌Make sure the element contains a solid fill or background before applying a swatch ❌');
     }
