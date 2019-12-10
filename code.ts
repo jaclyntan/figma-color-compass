@@ -516,7 +516,7 @@ figma.ui.onmessage = msg => {
         }
 
         //checkin it twice
-        if (checkFills !== undefined) {
+        if (Object.entries(checkFills).length !== 0 && checkFills.constructor === Object) {
           var color = checkFills['color'],
           colorData = {
             color: color,
@@ -633,7 +633,7 @@ if (msg.type === 'change-color') {
         fills[i].color.b = parseInt(msg.b) / 255;
       node.strokes = fills;
     } else {
-      figma.notify('❌Make sure the element contains a solid fill or background before applying a swatch ❌');
+      figma.notify('❌Check the element has a solid fill, stroke, or background before applying a swatch ❌');
     }
   }
 }
