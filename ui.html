@@ -489,11 +489,15 @@
   //init
   updateColor();
 
-  //update the color
+  //update the color with events
   document.getElementById('update-color').addEventListener("click", updateColor);
   document.getElementById('current-color').addEventListener("keyup", function (event) {
     if (event.key === "Enter") {
-      // Do work
+      updateColor();
+    }
+  });
+  document.getElementById('custom-steps').addEventListener("keyup", function (event) {
+    if (event.key === "Enter") {
       updateColor();
     }
   });
