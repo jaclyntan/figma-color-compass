@@ -1,140 +1,258 @@
 <style>
-body {
-  font-family: sans-serif;
-  font-size: 10px;
-  padding: 35px 2px 0;
-  box-sizing: border-box;
-}
+  body {
+    font-family: "Inter", "Helvetica", "Arial", sans-serif;
+    font-size: 10px;
+    padding: 35px 2px 0;
+    box-sizing: border-box;
+  }
 
-.grid-wrapper {
-  display: grid;
-  grid-template-columns:50% 50%;
-  grid-column-gap: 10px;
-  width: 100%;
-}
+  .grid-wrapper {
+    display: grid;
+    grid-template-columns: 50% 50%;
+    grid-column-gap: 10px;
+    width: 100%;
+  }
 
-/* Controls */
-.controls {
-  padding:5px 10px;
-  margin-bottom: 7px;
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
-  background: #FFF;
-  border-bottom: 1px solid #E5E5E5;
-  align-items: flex-end;
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: calc(100% - 20px);
-  z-index: 100;
-}
-.minor-controls {
-  position: relative;
-  padding-bottom: 3px;
-}
-.label,
-label {
-  font-weight: 600;
-  margin: 0 0 5px;
-  display: inline-block;
-  letter-spacing: .01em;
-  margin-right: 18px;
-}
-button {
-  border-radius: 3px;
-  border: none;
-  background: none;
-  appearance: none;
-  display: block;
-  margin: 1px;
-  padding: 2px 10px;
-}
+  #color-compass {
+    padding-top: 90px;
+  }
 
-.swatch {
-  padding: 0;
-  width: 100%;
-  height: 15px;
-  display: block;
-  overflow: hidden;
-  border: 2px solid transparent;
-}
+  /* Controls */
+  .controls {
+    padding: 10px;
+    background: #f2f2f2;
+    border-bottom: 1px solid #eeeeee;
+    align-items: flex-end;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: calc(100% - 20px);
+    z-index: 100;
+    height: 100px;
+    box-shadow: 0px 0px 6px rgba(0, 0, 0, 0.3);
+  }
 
-#update-color,
-#customSteps {
-  border: 2px solid transparent;
-  border-radius: 2px;
-}
+  .minor-controls {
+    position: relative;
+    padding-bottom: 3px;
+  }
 
-#update-color:hover,
-#customSteps:hover {
-  outline: 1px solid #E5E5E5;
-}
+  .label,
+  label {
+    font-weight: 600;
+    margin: 0 0 5px;
+    display: inline-block;
+    letter-spacing: .01em;
+    margin-right: 18px;
+  }
 
-#update-color:focus,
-#customSteps:focus,
-.swatch:focus {
-  outline: none;
-  border: 2px solid #0094FE;
-  border-radius: 2px;
-}
+  button {
+    border-radius: 3px;
+    border: none;
+    background: none;
+    appearance: none;
+    display: block;
+    margin: 1px;
+    padding: 2px 10px;
+  }
 
-/* color palettes */
-.palette {
-  /* border-bottom: 1px solid #E5E5E5; */
-  padding:6px 0;
-}
-#blended {
-  margin-bottom: 5px;
-}
-#palettes {
-  padding: 0 10px;
-}
-.colors {
-  display: flex;
-  align-items: flex-start;
-}
-.colors > * {
-  flex: 1;
-}
-button.add {
-  padding: 0;
-  margin: 0;
-  border: 1px solid #E5E5E5;
-  color: #7b7b7b;
-  height: 15px;
-  width: 15px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border-radius: 50%;
-  font-weight: bold;
-  margin: 0;
-  position: absolute;
-  top: -2px;
-  right: 0;
-}
-button.add .plus {
-  margin-top: -3px;
-}
-button.add:hover,
-button.add:focus {
-  border: 2px solid #0094FE;
-  color: rgb(52, 52, 52);
-  outline: none;
-}
+  .swatch {
+    padding: 0;
+    width: 100%;
+    min-width: 15px;
+    height: 15px;
+    display: block;
+    overflow: hidden;
+    border: 2px solid transparent;
+    transition: .3s ease all;
+  }
+
+  .swatch:hover {
+    cursor: pointer;
+    opacity: .5;
+    transition: .3s ease all;
+  }
+
+  #update-color {
+    background: #0094FE;
+    font-size: 12px;
+    color: #FFF;
+    margin: 0 10px 0 auto;
+    transition: .3s ease all;
+  }
+
+  #update-color:hover {
+    background: #373737;
+    transition: .3s ease all;
+  }
+
+  input,
+  button {
+    border: 2px solid transparent;
+    border-radius: 2px;
+  }
+
+  input:hover,
+  button:hover {
+    /* outline: 1px solid #0094FE; */
+    cursor: pointer;
+  }
+
+  input:focus,
+  button:focus {
+    outline: none;
+    border: 2px solid #0094FE;
+  }
+
+  #update-color:focus {
+    border: 2px solid #00518a;
+  }
+
+  #current-color:focus {
+    border-top: 2px solid #0094FE;
+    border-left: 2px solid #0094FE;
+    border-right: 2px solid #0094FE;
+  }
+
+  /* color palettes */
+  .palette {
+    /* border-bottom: 1px solid #E5E5E5; */
+    padding: 5px 0;
+  }
+
+  #palettes {
+    padding: 0 10px;
+    position: -webkit-sticky;
+    position: sticky;
+    top: 130px;
+    height: 320px;
+    overflow-y: auto;
+  }
+
+  .colors {
+    display: flex;
+    align-items: flex-start;
+  }
+
+  .colors>* {
+    flex: 1;
+  }
+
+  #blended {
+    margin-bottom: 5px;
+    display: flex;
+    flex-wrap: wrap;
+    /* display: grid;
+  grid-gap: 2px;
+  grid-template-columns: repeat( auto-fit, minmax(15px, 1fr) ); */
+  }
+
+  #blended .swatch,
+  #variations .swatch {
+    margin: 0;
+    /* flex: none; */
+    border-radius: 0;
+  }
+
+  button.add {
+    padding: 0;
+    margin: 0;
+    border: 1px solid #E5E5E5;
+    color: #7b7b7b;
+    width: 15px;
+    height: 15px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    font-weight: bold;
+    margin: 0;
+    position: absolute;
+    top: -2px;
+    right: 0;
+  }
+
+  button.add:hover,
+  button.add:focus {
+    border: 2px solid #0094FE;
+    color: rgb(52, 52, 52);
+    cursor: pointer;
+    width: 15px;
+    height: 15px;
+  }
+
+  #current-hex {
+    border-top: 1px solid #dadada;
+    padding: 10px 0;
+    margin-top: 10px
+  }
+
+  #current-color {
+    padding: 5px;
+    border: none;
+    font-size: 16px;
+    font-weight: bold;
+    text-align: center;
+    width: 100%;
+    border-bottom: 5px solid var(--currentColor);
+  }
+
+  .base-color-wrapper {
+    display: flex;
+  }
+
+  #copy {
+    width: 40px;
+    padding: 8px;
+    border-radius: 0 3px 3px 0;
+    background-color: #dcdcdc;
+    height: calc(100%-5px);
+    display: block;
+    width: 35px;
+    height: 35px;
+    transition: .3s ease all;
+  }
+
+  #copy:hover {
+    display: block;
+    width: 35px;
+    height: 35px;
+    background: #bfbfbf;
+    transition: .3s ease all;
+  }
+
+  #icon-clipboard {
+    fill: #6f6f6f;
+  }
 </style>
 
 
 <div class="controls">
-  <div class="col">
-    <div class="steps">
-        <label for="customSteps">Steps</label>
-        <input type="number" name="quantity" min="3" max="30" id="customSteps" value="8" data-previous="7">
+  <div class="grid-wrapper">
+    <div class="col">
+      <div class="steps">
+        <label for="custom-steps">Steps</label>
+        <input type="number" name="quantity" min="3" max="100" id="custom-steps" value="8" data-previous="7">
+      </div>
+    </div>
+    <div class="col">
+      <button id="update-color">Update Palette</button>
     </div>
   </div>
-  <div class="col">
-    <button id="update-color">Update</button>
+
+
+  <div id="current-hex">
+    <label for="currentColor">Current Base Color</label>
+    <div class="base-color-wrapper">
+      <input type="text" name="currentColor" min="3" max="30" id="current-color" value="#C8C8C8" data-r="200"
+        data-g="200" data-b="200" data-hex="#C8C8C8">
+      <button id="copy">
+        <svg id="icon-clipboard" viewBox="0 0 60 80" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path
+            d="M60 17.5C60 13.4375 56.5625 10 52.5 10H40C40 4.53125 35.4688 0 30 0C24.375 0 20 4.53125 20 10H7.5C3.28125 10 0 13.4375 0 17.5V72.5C0 76.7188 3.28125 80 7.5 80H52.5C56.5625 80 60 76.7188 60 72.5V17.5ZM30 6.25C32.0312 6.25 33.75 7.96875 33.75 10C33.75 12.1875 32.0312 13.75 30 13.75C27.8125 13.75 26.25 12.1875 26.25 10C26.25 7.96875 27.8125 6.25 30 6.25ZM45 24.0625C45 24.6875 44.5312 25 44.0625 25H15.9375C15.3125 25 15 24.6875 15 24.0625V20.9375C15 20.4688 15.3125 20 15.9375 20H44.0625C44.5312 20 45 20.4688 45 20.9375V24.0625Z" />
+        </svg>
+      </button>
+    </div>
   </div>
 </div>
 
@@ -144,28 +262,29 @@ button.add:focus {
   <div id="blend">
     <div class="label">Blend with previous color</div>
     <div id="blended" class="colors">
-        <button id="new-color" class="swatch" style="background-color:rgb(200, 200, 200)" data-r="200" data-g="200" data-b="200"></button>
+      <button id="new-color" class="swatch" style="background-color:rgb(200, 200, 200)" data-r="200" data-g="200"
+        data-b="200" data-hex="#C8C8C8"></button>
     </div>
   </div>
 
   <div id="main" class="grid-wrapper">
-    <div class="col">
-        <div id="tints-shades" class="grid-wrapper">
-          <div class="col">
-              <div id="tints"></div>
-          </div>
-          <div class="col">
-              <div id="shades"></div>
-          </div>
+    <div id="variations" class="col">
+      <div id="tints-shades" class="grid-wrapper">
+        <div class="col">
+          <div id="tints"></div>
         </div>
-        <div id="tones" class="grid-wrapper">
-          <div class="col">
-              <div id="saturated"></div>
-          </div>
-          <div class="col">
-              <div id="desaturated"></div>
-          </div>
+        <div class="col">
+          <div id="shades"></div>
         </div>
+      </div>
+      <div id="tones" class="grid-wrapper">
+        <div class="col">
+          <div id="saturated"></div>
+        </div>
+        <div class="col">
+          <div id="desaturated"></div>
+        </div>
+      </div>
     </div>
     <div id="palettes" class="col"></div>
   </div>
@@ -174,158 +293,208 @@ button.add:focus {
 
 
 <script>
-//UTILITY
-// https://stackoverflow.com/questions/21147832/convert-camel-case-to-human-readable-string
-function camelCaseToWords(str) {
-    return str.match(/^[a-z]+|[A-Z][a-z]*/g).map(function(x){
-        return x[0].toUpperCase() + x.substr(1).toLowerCase();
+  //UTILITY
+  // https://stackoverflow.com/questions/21147832/convert-camel-case-to-human-readable-string
+  function camelCaseToWords(str) {
+    return str.match(/^[a-z]+|[A-Z][a-z]*/g).map(function (x) {
+      return x[0].toUpperCase() + x.substr(1).toLowerCase();
     }).join(' ');
-};
+  };
 
-//send on plugin startup
-parent.postMessage({ pluginMessage: {
-  type: 'hello'
-} }, '*');
+  //send on plugin startup
+  parent.postMessage({
+    pluginMessage: {
+      type: 'hello'
+    }
+  }, '*');
+
+  document.getElementById("copy").addEventListener("click", function () {
+    document.getElementById("current-color").select();
+    document.getElementById("current-color").setSelectionRange(0, 99999); /* For mobile devices */
+    document.execCommand("copy");
+    parent.postMessage({
+      pluginMessage: {
+        type: 'clipboard',
+        value: document.getElementById("current-color").value
+      }
+    }, '*');
+  });
 
 
-function updateColor() {
-    parent.postMessage({ pluginMessage: {
-      type: 'update-color',
-      customSteps: document.getElementById('customSteps').value,
-      prevSteps: document.getElementById('customSteps').dataset.previous,
-      prevR: document.getElementById('new-color').dataset.r / 255,
-      prevG:  document.getElementById('new-color').dataset.g / 255,
-      prevB: document.getElementById('new-color').dataset.b / 255,
-    } }, '*');
-
-    onmessage = (event) => {
-      parent.postMessage({ pluginMessage: {
+  function updateColor() {
+    parent.postMessage({
+      pluginMessage: {
         type: 'update-color',
-        customSteps: document.getElementById('customSteps').value,
-        prevSteps: document.getElementById('customSteps').dataset.previous,
+        customSteps: document.getElementById('custom-steps').value,
+        prevSteps: document.getElementById('custom-steps').dataset.previous,
         prevR: document.getElementById('new-color').dataset.r / 255,
-        prevG:  document.getElementById('new-color').dataset.g / 255,
+        prevG: document.getElementById('new-color').dataset.g / 255,
         prevB: document.getElementById('new-color').dataset.b / 255,
-      } }, '*');
+        currR: document.getElementById('current-color').dataset.r / 255,
+        currG: document.getElementById('current-color').dataset.g / 255,
+        currB: document.getElementById('current-color').dataset.b / 255,
+        currHex: document.getElementById('current-color').value
+      }
+    }, '*');
+
     onmessage = (event) => {
-      let r = Math.round(event.data.pluginMessage.rgb.r * 255),
+      parent.postMessage({
+        pluginMessage: {
+          type: 'update-color',
+          customSteps: document.getElementById('custom-steps').value,
+          prevSteps: document.getElementById('custom-steps').dataset.previous,
+          prevR: document.getElementById('new-color').dataset.r / 255,
+          prevG: document.getElementById('new-color').dataset.g / 255,
+          prevB: document.getElementById('new-color').dataset.b / 255,
+          currR: document.getElementById('current-color').dataset.r / 255,
+          currG: document.getElementById('current-color').dataset.g / 255,
+          currB: document.getElementById('current-color').dataset.b / 255,
+          currHex: document.getElementById('current-color').value
+        }
+      }, '*');
+      onmessage = (event) => {
+        let r = Math.round(event.data.pluginMessage.rgb.r * 255),
           g = Math.round(event.data.pluginMessage.rgb.g * 255),
           b = Math.round(event.data.pluginMessage.rgb.b * 255),
+          hex = event.data.pluginMessage.rgb.hex,
 
           prevR = Math.round(event.data.pluginMessage.prevRgb.r * 255),
           prevG = Math.round(event.data.pluginMessage.prevRgb.g * 255),
           prevB = Math.round(event.data.pluginMessage.prevRgb.b * 255),
+          prevHex = event.data.pluginMessage.prevRgb.hex,
 
-          prevSteps = document.getElementById('customSteps').dataset.prevValue,
+          prevSteps = document.getElementById('custom-steps').dataset.prevValue,
           palettesContainer = document.getElementById('palettes'),
           //color data
           paletteData = event.data.pluginMessage.palettes,
           palettes = Object.entries(paletteData);
 
+        //Update the UI then add additional click events to the swatches
+        let updateUI = new Promise((resolve, reject) => {
+          //before we do anything, clear the palette
+          palettesContainer.innerHTML = '';
 
-      //Update the UI then add additional click events to the swatches
-      let updateUI = new Promise((resolve, reject) => {
+          //update the previous step value
+          let steps = document.getElementById('custom-steps').value;
+          document.getElementById('custom-steps').setAttribute('data-previous', steps);
+          document.getElementById('current-color').value = hex;
+          document.getElementById('current-color').dataset.r = r;
+          document.getElementById('current-color').dataset.g = g;
+          document.getElementById('current-color').dataset.b = b;
 
-        //before we do anything, clear the palette
-        palettesContainer.innerHTML = '';
+          document.documentElement.style.setProperty('--currentColor', hex);
 
-        //update the previous step value
-        let steps = document.getElementById('customSteps').value;
-        document.getElementById('customSteps').setAttribute('data-previous',steps);
-
-        //loop through the object, build the new palatte
-        palettes.forEach(function(palette) {
-          let name = palette[0],
+          //loop through the object, build the new palatte
+          palettes.forEach(function (palette) {
+            let name = palette[0],
               readableName = camelCaseToWords(name),
               colors = palette[1],
               totalShades = '';
-          //gather the swatches
-          colors.forEach(function(color) {
-            let rgb = `${color.r},${color.g},${color.b}`;
-            totalShades +=  `<button class="swatch" style="background-color:rgb(${rgb})" data-r="${color.r}" data-g="${color.g}" data-b="${color.b}"></button>`;
-          });
-          //update prebuilt elements or make new ones
-          switch (name) {
-            case 'tints':
-            case 'shades':
-            case 'saturated':
-            case 'desaturated':
-              const shadesContainer = document.getElementById(name);
-              shadesContainer.innerHTML = `<div class="palette"><div class="label">${readableName}</div>${totalShades}</div>`;
-            break;
+            //gather the swatches
+            colors.forEach(function (color) {
 
-            case 'blend':
-            let blendContainer = document.getElementById('blended');
-            blendContainer.innerHTML = `
-            <button id="new-color" class="swatch" style="background-color:rgb(${r},${g},${b})" data-r="${r}" data-g="${g}" data-b="${b}"></button>
+              let rgb = `${color.r},${color.g},${color.b}`;
+              totalShades +=
+                `<button class="swatch" style="background-color:rgb(${rgb})" data-hex="${color.hex}" data-r="${color.r}" data-g="${color.g}" data-b="${color.b}"></button>`;
+            });
+            //update prebuilt elements or make new ones
+            switch (name) {
+              case 'tints':
+              case 'shades':
+              case 'saturated':
+              case 'desaturated':
+                const shadesContainer = document.getElementById(name);
+                shadesContainer.innerHTML =
+                  `<div class="palette"><div class="label">${readableName}</div>${totalShades}</div>`;
+                break;
+
+              case 'blend':
+                let blendContainer = document.getElementById('blended');
+                blendContainer.innerHTML = `
+            <button id="new-color" class="swatch" style="background-color:rgb(${r},${g},${b})" data-hex="${hex}" data-r="${r}" data-g="${g}" data-b="${b}"></button>
             ${totalShades}
-            <button id="prev-color" class="swatch" style="background-color:rgb(${prevR},${prevG},${prevB})" data-r="${prevR}" data-g="${prevG}" data-b="${prevB}"></button>
+            <button id="prev-color" class="swatch" style="background-color:rgb(${prevR},${prevG},${prevB})" data-hex="${prevHex}" data-r="${prevR}" data-g="${prevG}" data-b="${prevB}"></button>
             `
-            break;
+                break;
 
-            default:
-              //create a new palette
-              let paletteContainer = document.createElement("div");
-              paletteContainer.setAttribute('id', name);
-              paletteContainer.setAttribute('class', 'palette');
+              default:
+                //create a new palette
+                let paletteContainer = document.createElement("div");
+                paletteContainer.setAttribute('id', name);
+                paletteContainer.setAttribute('class', 'palette');
 
-              paletteContainer.innerHTML = `<div class="minor-controls"><div class="label">${readableName}</div><button class="add" data-target="${name}"><span class="plus">+</span></button></div><div class="colors">${totalShades}</div>`;
-              palettesContainer.appendChild(paletteContainer);
+                paletteContainer.innerHTML =
+                  `<div class="minor-controls"><div class="label">${readableName}</div><button class="add" data-target="${name}"><span class="plus">+</span></button></div><div class="colors">${totalShades}</div>`;
+                palettesContainer.appendChild(paletteContainer);
+            }
+
+          });
+          resolve("✨ Colors successfully updated  ✨");
+        });
+
+        updateUI.then((successMessage) => {
+          console.log(successMessage);
+          const swatches = document.getElementsByClassName('swatch'),
+            addButtons = document.getElementsByClassName('add');
+
+          //send info about the swatch we just clicked
+          for (var i = 0; i < swatches.length; i++) {
+            swatches[i].addEventListener("click", function () {
+              document.getElementById('current-color').value = this.dataset.hex;
+              document.getElementById('current-color').dataset.r = this.dataset.r;
+              document.getElementById('current-color').dataset.g = this.dataset.g;
+              document.getElementById('current-color').dataset.b = this.dataset.b;
+              document.getElementById('current-color').dataset.hex = this.dataset.hex;
+              document.documentElement.style.setProperty('--currentColor', this.dataset.hex);
+
+              parent.postMessage({
+                pluginMessage: {
+                  type: 'change-color',
+                  r: this.dataset.r,
+                  g: this.dataset.g,
+                  b: this.dataset.b
+                }
+              }, '*');
+            });
           }
 
-        });
-        resolve("✨ Colors successfully updated  ✨");
-      });
-
-      updateUI.then((successMessage) => {
-        console.log(successMessage);
-        const swatches = document.getElementsByClassName('swatch'),
-              addButtons = document.getElementsByClassName('add');
-
-        //send info about the swatch we just clicked
-        for(var i=0;i<swatches.length;i++){
-          swatches[i].addEventListener("click", function(){
-            parent.postMessage({ pluginMessage: {
-              type: 'change-color',
-              r: this.dataset.r,
-              g: this.dataset.g,
-              b: this.dataset.b,
-            } }, '*');
-          });
-        }
-
-        //send info about the add button we just clicked
-        for(var i=0;i<addButtons.length;i++){
-          addButtons[i].addEventListener("click", function(){
-            let palette = this.dataset.target,
-                paletteContainer = document.querySelectorAll('#'+palette + ' .swatch'),
+          //send info about the add button we just clicked
+          for (var i = 0; i < addButtons.length; i++) {
+            addButtons[i].addEventListener("click", function () {
+              let palette = this.dataset.target,
+                paletteContainer = document.querySelectorAll('#' + palette + ' .swatch'),
                 colors = [];
-                paletteContainer.forEach(function(color) {
-                  let r = color.dataset.r,
-                      g = color.dataset.g,
-                      b = color.dataset.b;
-                  colors.push([r,g,b]);
-                });
-            parent.postMessage({ pluginMessage: {
-              type: 'add-palette',
-              swatches: colors
-            } }, '*');
-          });
-        }
-      });
-      updateUI.catch(function(error) {
-        console.error(error);
-      });
+              paletteContainer.forEach(function (color) {
+                let r = color.dataset.r,
+                  g = color.dataset.g,
+                  b = color.dataset.b;
+                colors.push([r, g, b]);
+              });
+              parent.postMessage({
+                pluginMessage: {
+                  type: 'add-palette',
+                  swatches: colors
+                }
+              }, '*');
+            });
+          }
+        });
+        updateUI.catch(function (error) {
+          console.error(error);
+        });
+      }
     }
   }
-}
 
-//init
-updateColor();
-
-//update the color
-document.getElementById('update-color').addEventListener("click", function(){
+  //init
   updateColor();
-});
 
+  //update the color
+  document.getElementById('update-color').addEventListener("click", updateColor);
+  document.getElementById('current-color').addEventListener("keyup", function (event) {
+    if (event.key === "Enter") {
+      // Do work
+      updateColor();
+    }
+  });
 </script>

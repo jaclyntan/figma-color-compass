@@ -1,6 +1,6 @@
 figma.showUI(__html__, {
     width: 280,
-    height: 405
+    height: 500
 });
 //utilities
 // https://stackoverflow.com/questions/36721830/convert-hsl-to-rgb-and-hex/54014428#54014428
@@ -14,6 +14,36 @@ function rgb2hsl(r, g, b) {
     let a = Math.max(r, g, b), n = a - Math.min(r, g, b), f = (1 - Math.abs(a + a - n - 1));
     let h = n && ((a == r) ? (g - b) / n : ((a == g) ? 2 + (b - r) / n : 4 + (r - g) / n));
     return [60 * (h < 0 ? h + 6 : h), f ? n / f : 0, (a + a - n) / 2];
+}
+// https://css-tricks.com/converting-color-spaces-in-javascript/
+function rgb2hex(r, g, b) {
+    r = Math.round(r * 255).toString(16);
+    g = Math.round(g * 255).toString(16);
+    b = Math.round(b * 255).toString(16);
+    if (r.length == 1)
+        r = "0" + r;
+    if (g.length == 1)
+        g = "0" + g;
+    if (b.length == 1)
+        b = "0" + b;
+    return "#" + r + g + b;
+}
+//https://stackoverflow.com/questions/12943774/hex-to-rgb-converter
+function hex2rgb(colour) {
+    var r, g, b;
+    if (colour.charAt(0) == '#') {
+        colour = colour.substr(1);
+    }
+    if (colour.length == 3) {
+        colour = colour.substr(0, 1) + colour.substr(0, 1) + colour.substr(1, 2) + colour.substr(1, 2) + colour.substr(2, 3) + colour.substr(2, 3);
+    }
+    r = colour.charAt(0) + '' + colour.charAt(1);
+    g = colour.charAt(2) + '' + colour.charAt(3);
+    b = colour.charAt(4) + '' + colour.charAt(5);
+    r = parseInt(r, 16) / 255;
+    g = parseInt(g, 16) / 255;
+    b = parseInt(b, 16) / 255;
+    return [r, g, b];
 }
 // https://www.figma.com/plugin-docs/editing-properties/
 function clone(val) {
@@ -63,6 +93,7 @@ function blendPalette(prevR, prevG, prevB, r, g, b, steps) {
             r: Math.round(newR * 255),
             g: Math.round(newG * 255),
             b: Math.round(newB * 255),
+            hex: rgb2hex(newR, newG, newB),
         };
         shades.push(shade);
     }
@@ -77,7 +108,8 @@ function tintsNshades(r, g, b, steps) {
             let shade = {
                 r: Math.round(newShade[0] * 255),
                 g: Math.round(newShade[1] * 255),
-                b: Math.round(newShade[2] * 255)
+                b: Math.round(newShade[2] * 255),
+                hex: rgb2hex(newShade[0], newShade[1], newShade[2]),
             };
             shades.push(shade);
         }
@@ -89,7 +121,8 @@ function tintsNshades(r, g, b, steps) {
             let shade = {
                 r: Math.round(newShade[0] * 255),
                 g: Math.round(newShade[1] * 255),
-                b: Math.round(newShade[2] * 255)
+                b: Math.round(newShade[2] * 255),
+                hex: rgb2hex(newShade[0], newShade[1], newShade[2]),
             };
             shades.push(shade);
         }
@@ -105,7 +138,8 @@ function tones(r, g, b, steps) {
             let shade = {
                 r: Math.round(newShade[0] * 255),
                 g: Math.round(newShade[1] * 255),
-                b: Math.round(newShade[2] * 255)
+                b: Math.round(newShade[2] * 255),
+                hex: rgb2hex(newShade[0], newShade[1], newShade[2]),
             };
             shades.push(shade);
         }
@@ -117,7 +151,8 @@ function tones(r, g, b, steps) {
             let shade = {
                 r: Math.round(newShade[0] * 255),
                 g: Math.round(newShade[1] * 255),
-                b: Math.round(newShade[2] * 255)
+                b: Math.round(newShade[2] * 255),
+                hex: rgb2hex(newShade[0], newShade[1], newShade[2]),
             };
             shades.push(shade);
         }
@@ -129,12 +164,14 @@ function complementaryPalette(r, g, b) {
     let currentShade = {
         r: Math.round(r * 255),
         g: Math.round(g * 255),
-        b: Math.round(b * 255)
+        b: Math.round(b * 255),
+        hex: rgb2hex(r, g, b),
     };
     let complementaryShade = {
         r: Math.round(newShade[0] * 255),
         g: Math.round(newShade[1] * 255),
         b: Math.round(newShade[2] * 255),
+        hex: rgb2hex(newShade[0], newShade[1], newShade[2]),
     };
     shades.push(currentShade, complementaryShade);
     return shades;
@@ -144,17 +181,20 @@ function splitComplementaryPalette(r, g, b) {
     let currentShade = {
         r: Math.round(r * 255),
         g: Math.round(g * 255),
-        b: Math.round(b * 255)
+        b: Math.round(b * 255),
+        hex: rgb2hex(r, g, b),
     };
     let complementaryShade1 = {
         r: Math.round(newShade1[0] * 255),
         g: Math.round(newShade1[1] * 255),
         b: Math.round(newShade1[2] * 255),
+        hex: rgb2hex(newShade1[0], newShade1[1], newShade1[2]),
     };
     let complementaryShade2 = {
         r: Math.round(newShade2[0] * 255),
         g: Math.round(newShade2[1] * 255),
         b: Math.round(newShade2[2] * 255),
+        hex: rgb2hex(newShade2[0], newShade2[1], newShade2[2]),
     };
     shades.push(currentShade, complementaryShade1, complementaryShade2);
     return shades;
@@ -164,17 +204,20 @@ function triadicPalette(r, g, b) {
     let currentShade = {
         r: Math.round(r * 255),
         g: Math.round(g * 255),
-        b: Math.round(b * 255)
+        b: Math.round(b * 255),
+        hex: rgb2hex(r, g, b),
     };
     let complementaryShade1 = {
         r: Math.round(newShade1[0] * 255),
         g: Math.round(newShade1[1] * 255),
         b: Math.round(newShade1[2] * 255),
+        hex: rgb2hex(newShade1[0], newShade1[1], newShade1[2]),
     };
     let complementaryShade2 = {
         r: Math.round(newShade2[0] * 255),
         g: Math.round(newShade2[1] * 255),
         b: Math.round(newShade2[2] * 255),
+        hex: rgb2hex(newShade2[0], newShade2[1], newShade2[2]),
     };
     shades.push(currentShade, complementaryShade1, complementaryShade2);
     return shades;
@@ -184,17 +227,20 @@ function analagousPalette(r, g, b) {
     let currentShade = {
         r: Math.round(r * 255),
         g: Math.round(g * 255),
-        b: Math.round(b * 255)
+        b: Math.round(b * 255),
+        hex: rgb2hex(r, g, b),
     };
     let complementaryShade1 = {
         r: Math.round(newShade1[0] * 255),
         g: Math.round(newShade1[1] * 255),
         b: Math.round(newShade1[2] * 255),
+        hex: rgb2hex(newShade1[0], newShade1[1], newShade1[2]),
     };
     let complementaryShade2 = {
         r: Math.round(newShade2[0] * 255),
         g: Math.round(newShade2[1] * 255),
         b: Math.round(newShade2[2] * 255),
+        hex: rgb2hex(newShade2[0], newShade2[1], newShade2[2]),
     };
     shades.push(currentShade, complementaryShade1, complementaryShade2);
     return shades;
@@ -204,22 +250,26 @@ function tetradicPalette(r, g, b) {
     let currentShade = {
         r: Math.round(r * 255),
         g: Math.round(g * 255),
-        b: Math.round(b * 255)
+        b: Math.round(b * 255),
+        hex: rgb2hex(r, g, b),
     };
     let complementaryShade1 = {
         r: Math.round(newShade1[0] * 255),
         g: Math.round(newShade1[1] * 255),
         b: Math.round(newShade1[2] * 255),
+        hex: rgb2hex(newShade1[0], newShade1[1], newShade1[2]),
     };
     let complementaryShade2 = {
         r: Math.round(newShade2[0] * 255),
         g: Math.round(newShade2[1] * 255),
         b: Math.round(newShade2[2] * 255),
+        hex: rgb2hex(newShade2[0], newShade2[1], newShade2[2]),
     };
     let complementaryShade3 = {
         r: Math.round(newShade3[0] * 255),
         g: Math.round(newShade3[1] * 255),
         b: Math.round(newShade3[2] * 255),
+        hex: rgb2hex(newShade3[0], newShade3[1], newShade3[2]),
     };
     shades.push(currentShade, complementaryShade1, complementaryShade2, complementaryShade3);
     return shades;
@@ -258,27 +308,32 @@ function randomPalette(r, g, b) {
     let currentShade = {
         r: Math.round(r * 255),
         g: Math.round(g * 255),
-        b: Math.round(b * 255)
+        b: Math.round(b * 255),
+        hex: rgb2hex(r, g, b),
     };
     let complementaryShade1 = {
         r: Math.round(newShade1[0] * 255),
         g: Math.round(newShade1[1] * 255),
         b: Math.round(newShade1[2] * 255),
+        hex: rgb2hex(newShade1[0], newShade1[1], newShade1[2]),
     };
     let complementaryShade2 = {
         r: Math.round(newShade2[0] * 255),
         g: Math.round(newShade2[1] * 255),
         b: Math.round(newShade2[2] * 255),
+        hex: rgb2hex(newShade2[0], newShade2[1], newShade2[2]),
     };
     let complementaryShade3 = {
         r: Math.round(newShade3[0] * 255),
         g: Math.round(newShade3[1] * 255),
         b: Math.round(newShade3[2] * 255),
+        hex: rgb2hex(newShade3[0], newShade3[1], newShade3[2]),
     };
     let complementaryShade4 = {
         r: Math.round(newShade4[0] * 255),
         g: Math.round(newShade4[1] * 255),
         b: Math.round(newShade4[2] * 255),
+        hex: rgb2hex(newShade4[0], newShade4[1], newShade4[2]),
     };
     shades.push(currentShade, complementaryShade1, complementaryShade2, complementaryShade3, complementaryShade4);
     return shades;
@@ -291,32 +346,35 @@ figma.ui.onmessage = msg => {
     }
     //refresh the data to update the color palettes
     if (msg.type === 'update-color') {
-        let defaultColor = { r: 0.7, g: 0.7, b: 0.7 };
+        let defaultColor = { r: 0.7, g: 0.7, b: 0.7, hex: '#464646' };
+        //check if an element is selected on the canvas
         if (figma.currentPage.selection.length) {
             // console.log(msg);
             for (const node of figma.currentPage.selection) {
                 //first check for a solid fill/bg then store the data
                 let checkFills = {};
-                if (node['fills'].length >= 1) {
-                    node['fills'].forEach(x => {
-                        if (x['type'] === 'SOLID') {
-                            checkFills = { type: 'FILL', color: x['color'] };
-                        }
-                    });
-                }
-                else if (node['backgrounds'] !== undefined) {
-                    node['backgrounds'].forEach(x => {
-                        if (x['type'] === 'SOLID') {
-                            checkFills = { type: 'BACKGROUND', color: x['color'] };
-                        }
-                    });
-                }
-                else if (node['strokes'].length >= 1) {
-                    node['strokes'].forEach(x => {
-                        if (x['type'] === 'SOLID') {
-                            checkFills = { type: 'STROKE', color: x['color'] };
-                        }
-                    });
+                if (node.type !== 'GROUP') {
+                    if (node['fills'].length >= 1) {
+                        node['fills'].forEach(x => {
+                            if (x['type'] === 'SOLID') {
+                                checkFills = { type: 'FILL', color: x['color'] };
+                            }
+                        });
+                    }
+                    else if (node['backgrounds'] !== undefined) {
+                        node['backgrounds'].forEach(x => {
+                            if (x['type'] === 'SOLID') {
+                                checkFills = { type: 'BACKGROUND', color: x['color'] };
+                            }
+                        });
+                    }
+                    else if (node['strokes'].length >= 1) {
+                        node['strokes'].forEach(x => {
+                            if (x['type'] === 'SOLID') {
+                                checkFills = { type: 'STROKE', color: x['color'] };
+                            }
+                        });
+                    }
                 }
                 //checkin it twice
                 if (Object.entries(checkFills).length !== 0 && checkFills.constructor === Object) {
@@ -325,6 +383,7 @@ figma.ui.onmessage = msg => {
                         r: color['r'],
                         g: color['g'],
                         b: color['b'],
+                        hex: rgb2hex(color['r'], color['g'], color['b']),
                         steps: msg.customSteps
                     };
                 }
@@ -334,21 +393,36 @@ figma.ui.onmessage = msg => {
                         r: defaultColor.r,
                         g: defaultColor.g,
                         b: defaultColor.b,
+                        hex: rgb2hex(defaultColor.r, defaultColor.g, defaultColor.b),
                         steps: 8
                     };
-                    figma.notify('❌ This plugin only works with elements containing solid fills/backgrounds. ❌');
+                    figma.notify('❌ Groups are not supported in this plugin. ❌');
                 }
             }
         }
         else {
-            colorData = {
-                color: `${msg.prevR}, ${msg.prevG}, ${msg.prevB}`,
-                r: msg.prevR,
-                g: msg.prevG,
-                b: msg.prevB,
-                steps: msg.customSteps
-            };
-            // figma.notify('❌ No valid fill or background was found. Default color applied ❌')
+            //this runs if no element is used to update the base colour
+            let inputValue = hex2rgb(msg.currHex);
+            if (inputValue) {
+                colorData = {
+                    color: `${inputValue[0]}, ${inputValue[1]}, ${inputValue[2]}`,
+                    r: inputValue[0],
+                    g: inputValue[1],
+                    b: inputValue[2],
+                    hex: msg.currHex,
+                    steps: msg.customSteps
+                };
+            }
+            else {
+                colorData = {
+                    color: `${msg.currR}, ${msg.currG}, ${msg.currB}`,
+                    r: msg.currR,
+                    g: msg.currG,
+                    b: msg.currB,
+                    hex: msg.currHex,
+                    steps: msg.customSteps
+                };
+            }
         }
         // console.log(  blendPalette(msg.prevR,msg.prevG,msg.prevB,colorData.r, colorData.g, colorData.b, colorData.steps) )
         let colorObject = {
@@ -369,17 +443,19 @@ figma.ui.onmessage = msg => {
                 r: colorData.r,
                 g: colorData.g,
                 b: colorData.b,
+                hex: rgb2hex(colorData.r, colorData.g, colorData.b),
             },
             prevRgb: {
                 r: msg.prevR,
                 g: msg.prevG,
                 b: msg.prevB,
+                hex: rgb2hex(msg.prevR, msg.prevG, msg.prevB),
             },
             prevSteps: msg.prevSteps
         };
         //limit the steps to under 30
-        if (colorData.steps > 50) {
-            figma.notify('❌Please keep steps under 50 ❌');
+        if (colorData.steps > 100) {
+            figma.notify('❌ Please keep steps under 100 ❌');
         }
         else {
             figma.ui.postMessage(colorObject);
@@ -390,26 +466,31 @@ figma.ui.onmessage = msg => {
         for (const node of figma.currentPage.selection) {
             //like before, we first check for a solid fill/bg then store it in an object
             let checkFills = {};
-            if (node['fills'].length >= 1) {
-                node['fills'].forEach(function (x, index) {
-                    if (x['type'] === 'SOLID') {
-                        checkFills = { type: 'FILL', color: x['color'], index: index };
-                    }
-                });
+            if (node.type !== 'GROUP') {
+                if (node['fills'].length >= 1) {
+                    node['fills'].forEach(function (x, index) {
+                        if (x['type'] === 'SOLID') {
+                            checkFills = { type: 'FILL', color: x['color'], index: index };
+                        }
+                    });
+                }
+                else if (node['backgrounds'] !== undefined) {
+                    node['backgrounds'].forEach(function (x, index) {
+                        if (x['type'] === 'SOLID') {
+                            checkFills = { type: 'BACKGROUND', color: x['color'], index: index };
+                        }
+                    });
+                }
+                else if (node['strokes'].length >= 1) {
+                    node['strokes'].forEach(function (x, index) {
+                        if (x['type'] === 'SOLID') {
+                            checkFills = { type: 'STROKE', color: x['color'], index: index };
+                        }
+                    });
+                }
             }
-            else if (node['backgrounds'] !== undefined) {
-                node['backgrounds'].forEach(function (x, index) {
-                    if (x['type'] === 'SOLID') {
-                        checkFills = { type: 'BACKGROUND', color: x['color'], index: index };
-                    }
-                });
-            }
-            else if (node['strokes'].length >= 1) {
-                node['strokes'].forEach(function (x, index) {
-                    if (x['type'] === 'SOLID') {
-                        checkFills = { type: 'STROKE', color: x['color'], index: index };
-                    }
-                });
+            else {
+                figma.notify('❌ Groups are not supported in this plugin. ❌');
             }
             //go round again and do the conditional
             if (checkFills['type'] === 'FILL' && "fills" in node) {
@@ -433,9 +514,6 @@ figma.ui.onmessage = msg => {
                 fills[i].color.b = parseInt(msg.b) / 255;
                 node.strokes = fills;
             }
-            else {
-                figma.notify('❌Check the element has a solid fill, stroke, or background before applying a swatch ❌');
-            }
         }
     }
     //add a palette to the viewport on demand
@@ -454,5 +532,8 @@ figma.ui.onmessage = msg => {
         // node.children[0].y = y;
         figma.currentPage.selection = swatches;
         // figma.viewport.scrollAndZoomIntoView(swatches);
+    }
+    if (msg.type === 'clipboard') {
+        figma.notify('⭐️ Copied ' + msg.value + ' to the clipboard ⭐️');
     }
 };
