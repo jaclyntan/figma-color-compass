@@ -65,6 +65,7 @@
     overflow: hidden;
     border: 2px solid transparent;
     transition: .3s ease all;
+    margin: 1px;
   }
 
   .swatch:hover {
@@ -108,7 +109,7 @@
     border: 2px solid #00518a;
   }
 
-  #current-color:focus {
+  #active-color:focus {
     border-top: 2px solid #0094FE;
     border-left: 2px solid #0094FE;
     border-right: 2px solid #0094FE;
@@ -147,8 +148,7 @@
   grid-template-columns: repeat( auto-fit, minmax(15px, 1fr) ); */
   }
 
-  #blended .swatch,
-  #variations .swatch {
+  #blended .swatch {
     margin: 0;
     /* flex: none; */
     border-radius: 0;
@@ -184,21 +184,42 @@
   #current-hex {
     border-top: 1px solid #dadada;
     padding: 10px 0;
-    margin-top: 10px
+    margin-top: 10px;
+    display: flex;
+    justify-content: space-between;
+    align-items: stretch;
   }
 
-  #current-color {
+  #base-color-wrapper {
+    flex: .4;
+  }
+
+  #base-color-wrapper .swatch {
+    height: 35px;
+    width: 35px;
+  }
+
+  #base-color {
+    background-color: #c8c8c8;
+    background-color: var(--activeColor);
+  }
+
+  #active-color-wrapper {
+    flex: 1;
+  }
+
+  #active-color-wrapper .inner-wrapper {
+    display: flex;
+  }
+
+  #active-color {
     padding: 5px;
     border: none;
     font-size: 16px;
     font-weight: bold;
     text-align: center;
     width: 100%;
-    border-bottom: 5px solid var(--currentColor);
-  }
-
-  .base-color-wrapper {
-    display: flex;
+    border-bottom: 5px solid var(--activeColor);
   }
 
   #copy {
@@ -209,7 +230,6 @@
     height: calc(100%-5px);
     display: block;
     width: 35px;
-    height: 35px;
     transition: .3s ease all;
   }
 
@@ -242,16 +262,23 @@
 
 
   <div id="current-hex">
-    <label for="currentColor">Current Base Color</label>
-    <div class="base-color-wrapper">
-      <input type="text" name="currentColor" min="3" max="30" id="current-color" value="#C8C8C8" data-r="200"
-        data-g="200" data-b="200" data-hex="#C8C8C8">
-      <button id="copy">
-        <svg id="icon-clipboard" viewBox="0 0 60 80" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <path
-            d="M60 17.5C60 13.4375 56.5625 10 52.5 10H40C40 4.53125 35.4688 0 30 0C24.375 0 20 4.53125 20 10H7.5C3.28125 10 0 13.4375 0 17.5V72.5C0 76.7188 3.28125 80 7.5 80H52.5C56.5625 80 60 76.7188 60 72.5V17.5ZM30 6.25C32.0312 6.25 33.75 7.96875 33.75 10C33.75 12.1875 32.0312 13.75 30 13.75C27.8125 13.75 26.25 12.1875 26.25 10C26.25 7.96875 27.8125 6.25 30 6.25ZM45 24.0625C45 24.6875 44.5312 25 44.0625 25H15.9375C15.3125 25 15 24.6875 15 24.0625V20.9375C15 20.4688 15.3125 20 15.9375 20H44.0625C44.5312 20 45 20.4688 45 20.9375V24.0625Z" />
-        </svg>
-      </button>
+
+    <div id="base-color-wrapper">
+      <div class="label">Base color</div>
+      <button id="base-color" class="swatch" data-r="200" data-g="200" data-b="200" data-hex="#C8C8C8"></button>
+    </div>
+    <div id="active-color-wrapper">
+      <label for="active-color">Active Color</label>
+      <div class="inner-wrapper">
+        <input type="text" name="activeColor" min="3" max="30" id="active-color" value="#C8C8C8" data-r="200"
+          data-g="200" data-b="200" data-hex="#C8C8C8">
+        <button id="copy">
+          <svg id="icon-clipboard" viewBox="0 0 60 80" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path
+              d="M60 17.5C60 13.4375 56.5625 10 52.5 10H40C40 4.53125 35.4688 0 30 0C24.375 0 20 4.53125 20 10H7.5C3.28125 10 0 13.4375 0 17.5V72.5C0 76.7188 3.28125 80 7.5 80H52.5C56.5625 80 60 76.7188 60 72.5V17.5ZM30 6.25C32.0312 6.25 33.75 7.96875 33.75 10C33.75 12.1875 32.0312 13.75 30 13.75C27.8125 13.75 26.25 12.1875 26.25 10C26.25 7.96875 27.8125 6.25 30 6.25ZM45 24.0625C45 24.6875 44.5312 25 44.0625 25H15.9375C15.3125 25 15 24.6875 15 24.0625V20.9375C15 20.4688 15.3125 20 15.9375 20H44.0625C44.5312 20 45 20.4688 45 20.9375V24.0625Z" />
+          </svg>
+        </button>
+      </div>
     </div>
   </div>
 </div>
@@ -309,13 +336,13 @@
   }, '*');
 
   document.getElementById("copy").addEventListener("click", function () {
-    document.getElementById("current-color").select();
-    document.getElementById("current-color").setSelectionRange(0, 99999); /* For mobile devices */
+    document.getElementById("active-color").select();
+    document.getElementById("active-color").setSelectionRange(0, 99999); /* For mobile devices */
     document.execCommand("copy");
     parent.postMessage({
       pluginMessage: {
         type: 'clipboard',
-        value: document.getElementById("current-color").value
+        value: document.getElementById("active-color").value
       }
     }, '*');
   });
@@ -330,10 +357,10 @@
         prevR: document.getElementById('new-color').dataset.r / 255,
         prevG: document.getElementById('new-color').dataset.g / 255,
         prevB: document.getElementById('new-color').dataset.b / 255,
-        currR: document.getElementById('current-color').dataset.r / 255,
-        currG: document.getElementById('current-color').dataset.g / 255,
-        currB: document.getElementById('current-color').dataset.b / 255,
-        currHex: document.getElementById('current-color').value
+        currR: document.getElementById('active-color').dataset.r / 255,
+        currG: document.getElementById('active-color').dataset.g / 255,
+        currB: document.getElementById('active-color').dataset.b / 255,
+        currHex: document.getElementById('active-color').value
       }
     }, '*');
 
@@ -346,10 +373,10 @@
           prevR: document.getElementById('new-color').dataset.r / 255,
           prevG: document.getElementById('new-color').dataset.g / 255,
           prevB: document.getElementById('new-color').dataset.b / 255,
-          currR: document.getElementById('current-color').dataset.r / 255,
-          currG: document.getElementById('current-color').dataset.g / 255,
-          currB: document.getElementById('current-color').dataset.b / 255,
-          currHex: document.getElementById('current-color').value
+          currR: document.getElementById('active-color').dataset.r / 255,
+          currG: document.getElementById('active-color').dataset.g / 255,
+          currB: document.getElementById('active-color').dataset.b / 255,
+          currHex: document.getElementById('active-color').value
         }
       }, '*');
       onmessage = (event) => {
@@ -377,12 +404,20 @@
           //update the previous step value
           let steps = document.getElementById('custom-steps').value;
           document.getElementById('custom-steps').setAttribute('data-previous', steps);
-          document.getElementById('current-color').value = hex;
-          document.getElementById('current-color').dataset.r = r;
-          document.getElementById('current-color').dataset.g = g;
-          document.getElementById('current-color').dataset.b = b;
+          document.getElementById('active-color').value = hex;
+          document.getElementById('active-color').dataset.r = r;
+          document.getElementById('active-color').dataset.g = g;
+          document.getElementById('active-color').dataset.b = b;
 
-          document.documentElement.style.setProperty('--currentColor', hex);
+
+          document.getElementById('base-color').value = hex;
+          document.getElementById('base-color').dataset.hex = hex;
+          document.getElementById('base-color').style.setProperty('--activeColor', hex);
+          document.getElementById('base-color').dataset.r = r;
+          document.getElementById('base-color').dataset.g = g;
+          document.getElementById('base-color').dataset.b = b;
+
+          document.documentElement.style.setProperty('--activeColor', hex);
 
           //loop through the object, build the new palatte
           palettes.forEach(function (palette) {
@@ -440,12 +475,13 @@
           //send info about the swatch we just clicked
           for (var i = 0; i < swatches.length; i++) {
             swatches[i].addEventListener("click", function () {
-              document.getElementById('current-color').value = this.dataset.hex;
-              document.getElementById('current-color').dataset.r = this.dataset.r;
-              document.getElementById('current-color').dataset.g = this.dataset.g;
-              document.getElementById('current-color').dataset.b = this.dataset.b;
-              document.getElementById('current-color').dataset.hex = this.dataset.hex;
-              document.documentElement.style.setProperty('--currentColor', this.dataset.hex);
+              document.getElementById('active-color').value = this.dataset.hex;
+              document.getElementById('active-color').dataset.r = this.dataset.r;
+              document.getElementById('active-color').dataset.g = this.dataset.g;
+              document.getElementById('active-color').dataset.b = this.dataset.b;
+              document.getElementById('active-color').dataset.hex = this.dataset.hex;
+
+              document.documentElement.style.setProperty('--activeColor', this.dataset.hex);
 
               parent.postMessage({
                 pluginMessage: {
@@ -491,7 +527,7 @@
 
   //update the color with events
   document.getElementById('update-color').addEventListener("click", updateColor);
-  document.getElementById('current-color').addEventListener("keyup", function (event) {
+  document.getElementById('active-color').addEventListener("keyup", function (event) {
     if (event.key === "Enter") {
       updateColor();
     }
