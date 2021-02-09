@@ -689,7 +689,7 @@ figma.ui.onmessage = msg => {
           });
         }
       } else {
-        figma.notify('❌ Groups are not supported in this plugin. ❌')
+        figma.notify('❌ Groups are not supported in this plugin ❌')
       }
 
       //go round again and do the conditional
@@ -750,5 +750,13 @@ figma.ui.onmessage = msg => {
 
   if (msg.type === 'clipboard') {
     figma.notify('⭐️ Copied ' + msg.value + ' to the clipboard ⭐️')
+  }
+
+  if (msg.type === 'error') {
+    figma.notify('❌ A valid color was not received ❌')
+  }
+
+  if (msg.type === 'success') {
+    figma.notify('⭐️ Palette succesfully updated ⭐️')
   }
 }
