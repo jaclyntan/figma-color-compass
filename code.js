@@ -222,7 +222,7 @@ function triadicPalette(r, g, b) {
     shades.push(currentShade, complementaryShade1, complementaryShade2);
     return shades;
 }
-function analagousPalette(r, g, b) {
+function analogousPalette(r, g, b) {
     let shades = [], hsl = rgb2hsl(r, g, b), newR1 = 30 + hsl[0], newR2 = hsl[0] - 30, newShade1 = hsl2rgb(newR1, hsl[1], hsl[2]), newShade2 = hsl2rgb(newR2, hsl[1], hsl[2]);
     let currentShade = {
         r: Math.round(r * 255),
@@ -280,7 +280,7 @@ function randomPalette(r, g, b) {
     //complementary
     if (kind === 1) {
         var newR1 = getRndInteger(0, 30) + hsl[0], newR2 = getRndInteger(170, 190) + hsl[0], newR3 = getRndInteger(160, 180) + hsl[0], newR4 = getRndInteger(180, 200) + hsl[0], newSat1 = getRndInteger(hsl[1] * 100, 50) * .01, newSat2 = getRndInteger(hsl[1] * 100 - 30, 50) * .01, newSat3 = getRndInteger(hsl[1] * 100 - 30, 10) * .01, newSat4 = getRndInteger(hsl[1] * 100 - 30, 5) * .01, newLight1 = getRndInteger(hsl[2] * 100 + 10, 90) * .01, newLight2 = getRndInteger(hsl[2] * 100, 70) * .01, newLight3 = getRndInteger(hsl[2] * 100, 30) * .01, newLight4 = getRndInteger(hsl[2] * 100, 10) * .01, newShade1 = hsl2rgb(newR1, newSat1, newLight1), newShade2 = hsl2rgb(newR2, newSat2, newLight2), newShade3 = hsl2rgb(newR3, newSat3, newLight3), newShade4 = hsl2rgb(newR4, newSat4, newLight4);
-        //analagous
+        //analogous
     }
     else if (kind === 2) {
         var newR1 = getRndInteger(0, 20) + hsl[0], newR2 = getRndInteger(0, 30) + hsl[0], newR3 = getRndInteger(0, -15) + hsl[0], newR4 = getRndInteger(0, -35) + hsl[0], newSat1 = getRndInteger(hsl[1] * 100, 70) * .01, newSat2 = getRndInteger(hsl[1] * 100, 50) * .01, newSat3 = getRndInteger(hsl[1] * 100, 20) * .01, newSat4 = getRndInteger(hsl[1] * 100, 10) * .01, newLight1 = getRndInteger(hsl[2] * 100, 90) * .01, newLight2 = getRndInteger(hsl[2] * 100, 60) * .01, newLight3 = getRndInteger(hsl[2] * 100, 50) * .01, newLight4 = getRndInteger(hsl[2] * 100, 30) * .01, newShade1 = hsl2rgb(newR1, newSat1, newLight1), newShade2 = hsl2rgb(newR2, newSat2, newLight2), newShade3 = hsl2rgb(newR3, newSat3, newLight3), newShade4 = hsl2rgb(newR4, newSat4, newLight4);
@@ -436,7 +436,7 @@ figma.ui.onmessage = msg => {
                 complementary: complementaryPalette(colorData.r, colorData.g, colorData.b),
                 splitComplementary: splitComplementaryPalette(colorData.r, colorData.g, colorData.b),
                 triadic: triadicPalette(colorData.r, colorData.g, colorData.b),
-                analagous: analagousPalette(colorData.r, colorData.g, colorData.b),
+                analogous: analogousPalette(colorData.r, colorData.g, colorData.b),
                 tetradic: tetradicPalette(colorData.r, colorData.g, colorData.b)
             },
             rgb: {

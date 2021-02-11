@@ -276,7 +276,7 @@ function triadicPalette(r, g, b) {
   return shades;
 }
 
-function analagousPalette(r, g, b) {
+function analogousPalette(r, g, b) {
   let shades = [],
     hsl = rgb2hsl(r, g, b),
     newR1 = 30 + hsl[0],
@@ -375,7 +375,7 @@ function randomPalette(r, g, b) {
       newShade2 = hsl2rgb(newR2, newSat2, newLight2),
       newShade3 = hsl2rgb(newR3, newSat3, newLight3),
       newShade4 = hsl2rgb(newR4, newSat4, newLight4);
-    //analagous
+    //analogous
   } else if (kind === 2) {
     var newR1 = getRndInteger(0, 20) + hsl[0],
       newR2 = getRndInteger(0, 30) + hsl[0],
@@ -636,7 +636,7 @@ figma.ui.onmessage = msg => {
         complementary: complementaryPalette(colorData.r, colorData.g, colorData.b),
         splitComplementary: splitComplementaryPalette(colorData.r, colorData.g, colorData.b),
         triadic: triadicPalette(colorData.r, colorData.g, colorData.b),
-        analagous: analagousPalette(colorData.r, colorData.g, colorData.b),
+        analogous: analogousPalette(colorData.r, colorData.g, colorData.b),
         tetradic: tetradicPalette(colorData.r, colorData.g, colorData.b)
       },
       rgb: {
