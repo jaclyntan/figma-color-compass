@@ -2,7 +2,6 @@
 
 ## ⭐️ Quickly navigate the colour spectrum with designer-focused accuracy ⭐️
 
-Have you ever spent an excessive amount of time trying to decide on the perfect shade of off-white to use in your design?
 
 Instead of eyeballing and colour picking randomly from the entire spectrum, simply feed a base colour to this plugin to generate tints, shades, tones, and complementary colours.
 
@@ -10,6 +9,7 @@ Increase or decrease the step value to hone in on the exact shade you want.
 
 Experiment with different swatches and update elements on the fly directly from the plugin.
 
+### Groups are now supported using solid fills!
 ---
 
 ## ⭐️ To Use
