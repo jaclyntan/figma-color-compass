@@ -29,13 +29,20 @@ Experiment with different swatches and update elements on the fly directly from 
 - You can now type in custom hex codes instead of updating through an element on the canvas if no element is currently selected. Note that if an element is selected on the canvas and the hex code is updated manually thereafter, the plugin will default to selecting the colour from the selected element first meaning any manual input will be ignored.
 - You can keep clicking on 'Update' to generate random colour palettes based on your previous selection.
 - Click on the plus button next to the palette label to add the swatches to your document.
-- This plugin will update the colours of any element that contains a solid fill, stroke, or background (groups not supported).
+- This plugin will work on any element that is able to display a solid fill, stroke, or background
 
 ♡ If you run into any bugs or have any feature requests please submit an issue on Github.
 
 ---
 
 ## ⭐️ Changelog
+
+### 13 Mar 2021
+- Froups can now be used to update the plugin
+- Swatches can now apply a solid fill to all child elements within a group
+- You can now update the plugin without having any element selected
+- You can now add swatches to the artboard from the shades and blend palettes
+- Solid fills can now be applied to elements without any pre-existing fill, stroke, or background
 
 ### 8 Feb 2021
 
