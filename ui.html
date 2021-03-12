@@ -28,7 +28,7 @@
     left: 0;
     width: calc(100% - 20px);
     z-index: 100;
-    height: 100px;
+    height: 90px;
     box-shadow: 0px 0px 6px rgba(0, 0, 0, 0.3);
   }
 
@@ -125,7 +125,7 @@
     padding: 0 10px;
     position: -webkit-sticky;
     position: sticky;
-    top: 130px;
+    top: 120px;
     height: 320px;
     overflow-y: auto;
   }
@@ -134,7 +134,9 @@
     display: flex;
     align-items: flex-start;
   }
-
+  .colors.vertical {
+  display: block;
+}
   .colors>* {
     flex: 1;
   }
@@ -195,8 +197,8 @@
   }
 
   #base-color-wrapper .swatch {
-    height: 35px;
-    width: 35px;
+    height: 30px;
+    width: 30px;
   }
 
   #base-color {
@@ -215,7 +217,7 @@
   #active-color {
     padding: 5px;
     border: none;
-    font-size: 16px;
+    font-size: 14px;
     font-weight: bold;
     text-align: center;
     width: 100%;
@@ -230,6 +232,7 @@
     height: calc(100%-5px);
     display: block;
     width: 35px;
+    height: 35px;
     transition: .3s ease all;
   }
 
@@ -242,7 +245,9 @@
   }
 
   #icon-clipboard {
-    fill: #6f6f6f;
+    fill: #555555;
+    height: 15px;
+    width:15px;
   }
 </style>
 
@@ -287,7 +292,9 @@
 
 <div id="color-compass">
   <div id="blend">
-    <div class="label">Blend with previous color</div>
+    <div class="minor-controls">
+      <div class="label">Blend with previous color</div><button class="add" data-target="blend"><span class="plus">+</span></button>
+    </div>
     <div id="blended" class="colors">
       <button id="new-color" class="swatch" style="background-color:rgb(200, 200, 200)" data-r="200" data-g="200"
         data-b="200" data-hex="#C8C8C8"></button>
@@ -306,10 +313,10 @@
       </div>
       <div id="tones" class="grid-wrapper">
         <div class="col">
-          <div id="saturated"></div>
+          <div id="saturate"></div>
         </div>
         <div class="col">
-          <div id="desaturated"></div>
+          <div id="desaturate"></div>
         </div>
       </div>
     </div>
@@ -437,11 +444,11 @@
               switch (name) {
                 case 'tints':
                 case 'shades':
-                case 'saturated':
-                case 'desaturated':
+                case 'saturate':
+                case 'desaturate':
                   const shadesContainer = document.getElementById(name);
-                  shadesContainer.innerHTML =
-                    `<div class="palette"><div class="label">${readableName}</div>${totalShades}</div>`;
+                  shadesContainer.innerHTML = `<div class="palette"><div class="minor-controls"><div class="label">${readableName}</div><button class="add" data-target="${name}"><span class="plus">+</span></button></div><div class="colors vertical">${totalShades}</div></div>`;
+
                   break;
 
                 case 'blend':

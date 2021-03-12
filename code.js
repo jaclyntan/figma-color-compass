@@ -1,6 +1,6 @@
 figma.showUI(__html__, {
-    width: 280,
-    height: 500
+    width: 320,
+    height: 505
 });
 //utilities
 // https://stackoverflow.com/questions/36721830/convert-hsl-to-rgb-and-hex/54014428#54014428
@@ -348,7 +348,7 @@ figma.ui.onmessage = msg => {
     if (msg.type === 'update-color') {
         let defaultColor = { r: 0.7, g: 0.7, b: 0.7, hex: '#464646' };
         //check if an element is selected on the canvas
-        if (figma.currentPage.selection.length) {
+        if (figma.currentPage.selection.length && figma.currentPage.selection[0].type !== 'GROUP') {
             // console.log(msg);
             for (const node of figma.currentPage.selection) {
                 //first check for a solid fill/bg then store the data
@@ -431,8 +431,8 @@ figma.ui.onmessage = msg => {
                 random: randomPalette(colorData.r, colorData.g, colorData.b),
                 tints: tintsNshades(colorData.r, colorData.g, colorData.b, colorData.steps),
                 shades: tintsNshades(colorData.r, colorData.g, colorData.b, -colorData.steps),
-                saturated: tones(colorData.r, colorData.g, colorData.b, colorData.steps),
-                desaturated: tones(colorData.r, colorData.g, colorData.b, -colorData.steps),
+                saturate: tones(colorData.r, colorData.g, colorData.b, colorData.steps),
+                desaturate: tones(colorData.r, colorData.g, colorData.b, -colorData.steps),
                 complementary: complementaryPalette(colorData.r, colorData.g, colorData.b),
                 splitComplementary: splitComplementaryPalette(colorData.r, colorData.g, colorData.b),
                 triadic: triadicPalette(colorData.r, colorData.g, colorData.b),
@@ -463,57 +463,92 @@ figma.ui.onmessage = msg => {
     }
     //change a selection's fill if a swatch is clicked
     if (msg.type === 'change-color') {
-        for (const node of figma.currentPage.selection) {
-            //like before, we first check for a solid fill/bg then store it in an object
-            let checkFills = {};
-            if (node.type !== 'GROUP') {
-                if (node['fills'].length >= 1) {
-                    node['fills'].forEach(function (x, index) {
-                        if (x['type'] === 'SOLID') {
-                            checkFills = { type: 'FILL', color: x['color'], index: index };
-                        }
-                    });
+        if (figma.currentPage.selection.length > 0 && figma.currentPage.selection[0].type !== 'GROUP') {
+            for (const node of figma.currentPage.selection) {
+                //like before, we first check for a solid fill/bg then store it in an object
+                let checkFills = {};
+                if (node.type !== 'GROUP') {
+                    if (node['fills'].length >= 1) {
+                        node['fills'].forEach(function (x, index) {
+                            if (x['type'] === 'SOLID') {
+                                checkFills = { type: 'FILL', color: x['color'], index: index };
+                            }
+                        });
+                    }
+                    else if (node['backgrounds'] !== undefined) {
+                        node['backgrounds'].forEach(function (x, index) {
+                            if (x['type'] === 'SOLID') {
+                                checkFills = { type: 'BACKGROUND', color: x['color'], index: index };
+                            }
+                        });
+                    }
+                    else if (node['strokes'].length >= 1) {
+                        node['strokes'].forEach(function (x, index) {
+                            if (x['type'] === 'SOLID') {
+                                checkFills = { type: 'STROKE', color: x['color'], index: index };
+                            }
+                        });
+                    }
                 }
-                else if (node['backgrounds'] !== undefined) {
-                    node['backgrounds'].forEach(function (x, index) {
-                        if (x['type'] === 'SOLID') {
-                            checkFills = { type: 'BACKGROUND', color: x['color'], index: index };
-                        }
-                    });
+                else {
+                    figma.notify('❌ Groups are not supported in this plugin ❌');
                 }
-                else if (node['strokes'].length >= 1) {
-                    node['strokes'].forEach(function (x, index) {
-                        if (x['type'] === 'SOLID') {
-                            checkFills = { type: 'STROKE', color: x['color'], index: index };
-                        }
-                    });
+                //go round again and do the conditional
+                if (checkFills['type'] === 'FILL' && "fills" in node) {
+                    let i = checkFills['index'], fills = clone(node.fills);
+                    fills[i].color.r = parseInt(msg.r) / 255;
+                    fills[i].color.g = parseInt(msg.g) / 255;
+                    fills[i].color.b = parseInt(msg.b) / 255;
+                    node.fills = fills;
+                }
+                else if (checkFills['type'] === 'BACKGROUND' && "backgrounds" in node) {
+                    let i = checkFills['index'], fills = clone(node.backgrounds);
+                    fills[i].color.r = parseInt(msg.r) / 255;
+                    fills[i].color.g = parseInt(msg.g) / 255;
+                    fills[i].color.b = parseInt(msg.b) / 255;
+                    node.backgrounds = fills;
+                }
+                else if (checkFills['type'] === 'STROKE' && "strokes" in node) {
+                    let i = checkFills['index'], fills = clone(node.strokes);
+                    fills[i].color.r = parseInt(msg.r) / 255;
+                    fills[i].color.g = parseInt(msg.g) / 255;
+                    fills[i].color.b = parseInt(msg.b) / 255;
+                    node.strokes = fills;
+                }
+                else if (node['fills'].length == 0) {
+                    //this will create a new fill on an element with no stroke, fill, or background already defined
+                    let fillObj = {};
+                    let nodeFills = Object.assign([], node['fills']);
+                    fillObj['blendMode'] = 'NORMAL';
+                    fillObj['color'] = { r: parseInt(msg.r) / 255, g: parseInt(msg.g) / 255, b: parseInt(msg.b) / 255 };
+                    fillObj['opacity'] = 1;
+                    fillObj['type'] = 'SOLID';
+                    fillObj['visible'] = true;
+                    nodeFills.push(fillObj);
+                    node['fills'] = nodeFills;
+                }
+                else {
+                    figma.notify('❌ Check the element has a solid fill, stroke, or background before applying a swatch ❌');
                 }
             }
-            else {
-                figma.notify('❌ Groups are not supported in this plugin ❌');
-            }
-            //go round again and do the conditional
-            if (checkFills['type'] === 'FILL' && "fills" in node) {
-                let i = checkFills['index'], fills = clone(node.fills);
-                fills[i].color.r = parseInt(msg.r) / 255;
-                fills[i].color.g = parseInt(msg.g) / 255;
-                fills[i].color.b = parseInt(msg.b) / 255;
-                node.fills = fills;
-            }
-            else if (checkFills['type'] === 'BACKGROUND' && "backgrounds" in node) {
-                let i = checkFills['index'], fills = clone(node.backgrounds);
-                fills[i].color.r = parseInt(msg.r) / 255;
-                fills[i].color.g = parseInt(msg.g) / 255;
-                fills[i].color.b = parseInt(msg.b) / 255;
-                node.backgrounds = fills;
-            }
-            else if (checkFills['type'] === 'STROKE' && "strokes" in node) {
-                let i = checkFills['index'], fills = clone(node.strokes);
-                fills[i].color.r = parseInt(msg.r) / 255;
-                fills[i].color.g = parseInt(msg.g) / 255;
-                fills[i].color.b = parseInt(msg.b) / 255;
-                node.strokes = fills;
-            }
+        }
+        else if (figma.currentPage.selection.length > 0 && figma.currentPage.selection[0].type === 'GROUP') {
+            //recolors all child elements in a group with the same fill
+            let children = figma.currentPage.selection[0].children;
+            children.forEach(function (node) {
+                let fillObj = {};
+                let nodeFills = Object.assign([], node['fills']);
+                fillObj['blendMode'] = 'NORMAL';
+                fillObj['color'] = { r: parseInt(msg.r) / 255, g: parseInt(msg.g) / 255, b: parseInt(msg.b) / 255 };
+                fillObj['opacity'] = 1;
+                fillObj['type'] = 'SOLID';
+                fillObj['visible'] = true;
+                nodeFills.push(fillObj);
+                node['fills'] = nodeFills;
+            });
+        }
+        else {
+            figma.notify("🦄 Select an element to update it's fill 💫");
         }
     }
     //add a palette to the viewport on demand
@@ -531,7 +566,8 @@ figma.ui.onmessage = msg => {
         // node.children[0].x = x;
         // node.children[0].y = y;
         figma.currentPage.selection = swatches;
-        // figma.viewport.scrollAndZoomIntoView(swatches);
+        figma.viewport.scrollAndZoomIntoView(swatches);
+        figma.viewport.zoom = .3;
     }
     if (msg.type === 'clipboard') {
         figma.notify('⭐️ Copied ' + msg.value + ' to the clipboard ⭐️');
