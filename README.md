@@ -1,6 +1,6 @@
 ![Figma Color Compass](./colorartwork.jpg)
 
-## ⭐️ Quickly navigate the colour spectrum with designer-focused accuracy ⭐️
+## ⭐️ Quickly navigate the colour spectrum with designer-focused accuracy
 
 
 Instead of eyeballing and colour picking randomly from the entire spectrum, simply feed a base colour to this plugin to generate tints, shades, tones, and complementary colours.

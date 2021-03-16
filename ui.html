@@ -293,7 +293,7 @@
 <div id="color-compass">
   <div id="blend">
     <div class="minor-controls">
-      <div class="label">Blend with previous color</div><button class="add" data-target="blend"><span class="plus">+</span></button>
+      <div class="label">Blend with previous color</div><button class="add" data-target="blended"><span class="plus">+</span></button>
     </div>
     <div id="blended" class="colors">
       <button id="new-color" class="swatch" style="background-color:rgb(200, 200, 200)" data-r="200" data-g="200"
@@ -454,10 +454,10 @@
                 case 'blend':
                   let blendContainer = document.getElementById('blended');
                   blendContainer.innerHTML = `
-            <button id="new-color" class="swatch" style="background-color:rgb(${r},${g},${b})" data-hex="${hex}" data-r="${r}" data-g="${g}" data-b="${b}"></button>
-            ${totalShades}
-            <button id="prev-color" class="swatch" style="background-color:rgb(${prevR},${prevG},${prevB})" data-hex="${prevHex}" data-r="${prevR}" data-g="${prevG}" data-b="${prevB}"></button>
-            `
+                  <button id="new-color" class="swatch" style="background-color:rgb(${r},${g},${b})" data-hex="${hex}" data-r="${r}" data-g="${g}" data-b="${b}"></button>
+                  ${totalShades}
+                  <button id="prev-color" class="swatch" style="background-color:rgb(${prevR},${prevG},${prevB})" data-hex="${prevHex}" data-r="${prevR}" data-g="${prevG}" data-b="${prevB}"></button>
+                  `
                   break;
 
                 default:
@@ -478,56 +478,36 @@
             //     type: 'success'
             //   }
             // }, '*');
-          });
-
-          updateUI.then((successMessage) => {
-            console.log(successMessage);
-            const swatches = document.getElementsByClassName('swatch'),
-              addButtons = document.getElementsByClassName('add');
-
+          }).then( function(success) {
+            let swatches = document.querySelectorAll('.swatch'),
+                addButtons = document.querySelectorAll('.add:not([data-target=blended])');
             //send info about the swatch we just clicked
-            for (var i = 0; i < swatches.length; i++) {
-              swatches[i].addEventListener("click", function () {
-                document.getElementById('active-color').value = this.dataset.hex;
-                document.getElementById('active-color').dataset.r = this.dataset.r;
-                document.getElementById('active-color').dataset.g = this.dataset.g;
-                document.getElementById('active-color').dataset.b = this.dataset.b;
-                document.getElementById('active-color').dataset.hex = this.dataset.hex;
+            swatches.forEach( function(swatch) {
+              swatch.addEventListener("click", function () {
+                document.getElementById('active-color').value = swatch.dataset.hex;
+                document.getElementById('active-color').dataset.r = swatch.dataset.r;
+                document.getElementById('active-color').dataset.g = swatch.dataset.g;
+                document.getElementById('active-color').dataset.b = swatch.dataset.b;
+                document.getElementById('active-color').dataset.hex = swatch.dataset.hex;
 
-                document.documentElement.style.setProperty('--activeColor', this.dataset.hex);
+                document.documentElement.style.setProperty('--activeColor', swatch.dataset.hex);
 
                 parent.postMessage({
                   pluginMessage: {
                     type: 'change-color',
-                    r: this.dataset.r,
-                    g: this.dataset.g,
-                    b: this.dataset.b
+                    r: swatch.dataset.r,
+                    g: swatch.dataset.g,
+                    b: swatch.dataset.b
                   }
                 }, '*');
               });
-            }
-
+            });
             //send info about the add button we just clicked
-            for (var i = 0; i < addButtons.length; i++) {
-              addButtons[i].addEventListener("click", function () {
-                let palette = this.dataset.target,
-                  paletteContainer = document.querySelectorAll('#' + palette + ' .swatch'),
-                  colors = [];
-                paletteContainer.forEach(function (color) {
-                  let r = color.dataset.r,
-                    g = color.dataset.g,
-                    b = color.dataset.b;
-                  colors.push([r, g, b]);
-                });
-                parent.postMessage({
-                  pluginMessage: {
-                    type: 'add-palette',
-                    swatches: colors
-                  }
-                }, '*');
-              });
-            }
+            addButtons.forEach( function(button) {
+             addPalette(button);
+            });
           });
+
           updateUI.catch(function (error) {
             console.error(error);
             parent.postMessage({
@@ -547,6 +527,28 @@
       }
     }
   }
+
+
+function addPalette(button) { 
+  button.addEventListener("click", function () {
+    var palette = button.dataset.target,
+      paletteContainer = document.querySelectorAll('#' + palette + ' .swatch'),
+      colors = [];
+    paletteContainer.forEach(function (color) {
+      var r = color.dataset.r,
+        g = color.dataset.g,
+        b = color.dataset.b;
+      colors.push([r, g, b]);
+    });
+    parent.postMessage({
+      pluginMessage: {
+        type: 'add-palette',
+        swatches: colors
+      }
+    }, '*');
+  });
+}
+addPalette(document.querySelector('[data-target=blended]'))
 
   //init
   updateColor();

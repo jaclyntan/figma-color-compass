@@ -396,7 +396,7 @@ figma.ui.onmessage = msg => {
                         hex: rgb2hex(defaultColor.r, defaultColor.g, defaultColor.b),
                         steps: 8
                     };
-                    figma.notify('❌ Groups are not supported in this plugin. ❌');
+                    // figma.notify('❌ Groups are not supported in this plugin. ❌')
                 }
             }
         }
@@ -536,15 +536,17 @@ figma.ui.onmessage = msg => {
             //recolors all child elements in a group with the same fill
             let children = figma.currentPage.selection[0].children;
             children.forEach(function (node) {
-                let fillObj = {};
-                let nodeFills = Object.assign([], node['fills']);
-                fillObj['blendMode'] = 'NORMAL';
-                fillObj['color'] = { r: parseInt(msg.r) / 255, g: parseInt(msg.g) / 255, b: parseInt(msg.b) / 255 };
-                fillObj['opacity'] = 1;
-                fillObj['type'] = 'SOLID';
-                fillObj['visible'] = true;
-                nodeFills.push(fillObj);
-                node['fills'] = nodeFills;
+                if (node.type !== 'GROUP') {
+                    let fillObj = {};
+                    let nodeFills = Object.assign([], node['fills']);
+                    fillObj['blendMode'] = 'NORMAL';
+                    fillObj['color'] = { r: parseInt(msg.r) / 255, g: parseInt(msg.g) / 255, b: parseInt(msg.b) / 255 };
+                    fillObj['opacity'] = 1;
+                    fillObj['type'] = 'SOLID';
+                    fillObj['visible'] = true;
+                    nodeFills.push(fillObj);
+                    node['fills'] = nodeFills;
+                }
             });
         }
         else {

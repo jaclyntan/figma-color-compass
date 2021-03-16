@@ -597,7 +597,7 @@ figma.ui.onmessage = msg => {
             hex: rgb2hex(defaultColor.r, defaultColor.g, defaultColor.b),
             steps: 8
           }
-          figma.notify('❌ Groups are not supported in this plugin. ❌')
+          // figma.notify('❌ Groups are not supported in this plugin. ❌')
         }
       }
     } else {
@@ -735,16 +735,18 @@ figma.ui.onmessage = msg => {
       //recolors all child elements in a group with the same fill
       let children = figma.currentPage.selection[0].children;
       children.forEach(function (node) {
-        let fillObj = {};
-        let nodeFills = Object.assign([], node['fills']);
+        if ( node.type !== 'GROUP') {
+          let fillObj = {};
+          let nodeFills = Object.assign([], node['fills']);
 
-        fillObj['blendMode'] = 'NORMAL';
-        fillObj['color'] = { r: parseInt(msg.r) / 255, g: parseInt(msg.g) / 255, b: parseInt(msg.b) / 255 };
-        fillObj['opacity'] = 1;
-        fillObj['type'] = 'SOLID';
-        fillObj['visible'] = true;
-        nodeFills.push(fillObj)
-        node['fills'] = nodeFills;
+          fillObj['blendMode'] = 'NORMAL';
+          fillObj['color'] = { r: parseInt(msg.r) / 255, g: parseInt(msg.g) / 255, b: parseInt(msg.b) / 255 };
+          fillObj['opacity'] = 1;
+          fillObj['type'] = 'SOLID';
+          fillObj['visible'] = true;
+          nodeFills.push(fillObj)
+          node['fills'] = nodeFills;
+        }
       });
     } else {
       figma.notify("🦄 Select an element to update it's fill 💫")
@@ -758,13 +760,12 @@ figma.ui.onmessage = msg => {
       x = viewport.x,
       y = viewport.y,
       node = figma.currentPage;
-
     msg.swatches.forEach(function (color, index) {
       let r = color[0] / 255,
         g = color[1] / 255,
         b = color[2] / 255,
 
-        swatch = figma.createRectangle();
+      swatch = figma.createRectangle();
       swatch.fills = [{ type: 'SOLID', color: { r: r, g: g, b: b } }];
       swatch.x = (x - msg.swatches.length * 100 / 2) + (100 * index);
       swatch.y = y;
