@@ -1,5 +1,7 @@
 ![Figma Color Compass](./colorartwork.jpg)
 
+[Try it out](https://www.figma.com/community/plugin/754415266574382747)
+
 ## ⭐️ Quickly navigate the colour spectrum with designer-focused accuracy
 
 
@@ -9,7 +11,6 @@ Increase or decrease the step value to hone in on the exact shade you want.
 
 Experiment with different swatches and update elements on the fly directly from the plugin.
 
-### Groups are now supported using solid fills!
 ---
 
 ## ⭐️ To Use
@@ -32,25 +33,3 @@ Experiment with different swatches and update elements on the fly directly from 
 - This plugin will work on any element that is able to display a solid fill, stroke, or background
 
 ♡ If you run into any bugs or have any feature requests please submit an issue on Github.
-
----
-
-## ⭐️ Changelog
-
-### 13 Mar 2021
-- Froups can now be used to update the plugin
-- Swatches can now apply a solid fill to all child elements within a group
-- You can now update the plugin without having any element selected
-- You can now add swatches to the artboard from the shades and blend palettes
-- Solid fills can now be applied to elements without any pre-existing fill, stroke, or background
-
-### 8 Feb 2021
-
-- Plugin now prominently displays the base colour
-- Added copy to clipboard feature
-- Made the controls widget and complementary palettes sticky
-- Updated max step count to 100
-- Added the ability to entire hex codes manually if no element is selected on the canvas
-- Added the ability to update the base colour from a swatch directly in the plugin
-- Removed spaces between the swatches in the blend and shades palettes so it is easier to distinguish the colour variance between steps
-- general UI, keyboard and focus improvements
