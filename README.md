@@ -1,6 +1,10 @@
 ![Figma Color Compass](./colorartwork.jpg)
 
-[Try it out](https://www.figma.com/community/plugin/754415266574382747)
+## [Try it out](https://www.figma.com/community/plugin/754415266574382747)
+
+Note: This plugin is now a paid resource and closed source on Figma. No further code updates will be made on this repository, however you may still download the existing files to learn and use for your personal development.
+
+---
 
 ## ⭐️ Quickly navigate the colour spectrum with designer-focused accuracy
 
